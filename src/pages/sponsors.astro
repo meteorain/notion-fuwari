@@ -20,43 +20,10 @@ const { sponsors } = sponsorsData as SponsorsData;
             <p class="text-lg text-black/80 dark:text-white/80 mb-3">
                 如果您觉得我的内容对您有帮助，欢迎通过以下方式支持我的创作。您的每一份支持都是我持续创作的动力！
             </p>
-            <p class="text-sm text-black/60 dark:text-white/60">
-                所有赞助将用于网站维护、服务器费用以及内容创作。
-            </p>
+            
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 max-w-4xl mx-auto">
-            <!-- 支付宝 -->
-            <div class="donate-card">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="h-10 w-10 rounded-lg bg-blue-500 flex items-center justify-center">
-                        <Icon name="simple-icons:alipay" class="text-[1.5rem] text-white">
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-black dark:text-white">支付宝</h3>
-                        <p class="text-sm text-black/60 dark:text-white/60">扫码支付</p>
-                    </div>
-                </div>
-                <div class="qr-code-placeholder">
-                    <img src="/sponsors/alipay.svg" alt="支付宝二维码" class="w-48 h-48 mx-auto rounded-lg" />
-                </div>
-            </div>
-
-            <!-- 微信支付 -->
-            <div class="donate-card">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="h-10 w-10 rounded-lg bg-green-500 flex items-center justify-center">
-                        <Icon name="simple-icons:wechat" class="text-[1.5rem] text-white">
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-black dark:text-white">微信支付</h3>
-                        <p class="text-sm text-black/60 dark:text-white/60">扫码支付</p>
-                    </div>
-                </div>
-                <div class="qr-code-placeholder">
-                    <img src="/sponsors/wechat.svg" alt="微信支付二维码" class="w-48 h-48 mx-auto rounded-lg" />
-                </div>
-            </div>
+        
 
             
             </div>
@@ -64,9 +31,9 @@ const { sponsors } = sponsorsData as SponsorsData;
 
         <br>
 
-        <!-- 其他支持方式 -->
+        <!-- 支持方式 -->
         <div class="card-base p-6 mb-6">
-            <h2 class="text-xl font-bold text-black dark:text-white mb-3">其他支持方式</h2>
+            <h2 class="text-xl font-bold text-black dark:text-white mb-3">支持方式</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="support-card">
                     <div class="flex items-center gap-2 mb-2">
@@ -99,35 +66,7 @@ const { sponsors } = sponsorsData as SponsorsData;
                 </div>
             </div>
         </div>
-        <div class="sponsors-section card-base p-6">
-            <h2 class="text-xl font-bold text-black dark:text-white mb-3 flex items-center gap-2">
-                <Icon name="material-symbols:group" class="text-[1.5rem] text-[var(--primary)]"></Icon>
-                <span>已赞助的小伙伴</span>
-            </h2>
-            <p class="text-sm text-black/60 dark:text-white/60 mb-4">
-            如果您已赞助，并且想加入赞助名单，请自行提交PR <a target="_blank" href="https://github.com/evepupil/my-fuwari/edit/main/src/data/sponsors.json" class="transition link text-[var(--primary)] font-medium underline">点击这里提交</a>
-            </p>
-            <div class="sponsors-grid">
-                {sponsors.map((sponsor) => (
-                    <div class="sponsor-card">
-                        <div class="flex items-center gap-3 p-4 rounded-lg bg-[var(--card-bg)] border border-black/10 dark:border-white/10">
-                            <div class="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center overflow-hidden">
-                                {sponsor.avatar ? (
-                                    <img src={sponsor.avatar} alt={`${sponsor.name}的头像`} loading="lazy" class="w-full h-full object-cover" />
-                                ) : (
-                                    <Icon name="material-symbols:person" class="text-gray-500 dark:text-gray-400 text-[1.2rem]" />
-                                )}
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-black dark:text-white text-sm">{sponsor.name}</h4>
-                                <p class="text-xs text-black/60 dark:text-white/60">{sponsor.date}</p>
-                            </div>
-                            <div class="text-xs text-[var(--primary)] font-medium">{sponsor.amount}</div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+        
     </div>
 </MainGridLayout>
 
