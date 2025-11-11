@@ -57,11 +57,8 @@ jobs:
             echo "📭 没有新文章需要同步"
           else
             # 有更改，提交并推送
-            git commit -m "chore: 自动同步 Notion 文章
-
-📝 文章已从 Notion 自动同步
-🕐 同步时间: $(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')
-🤖 由 GitHub Actions 自动提交"
+            SYNC_TIME=$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')
+            git commit -m "chore: 自动同步 Notion 文章" -m "📝 文章已从 Notion 自动同步" -m "🕐 同步时间: ${SYNC_TIME}" -m "🤖 由 GitHub Actions 自动提交"
             git push
             echo "✅ 成功同步并推送新文章"
           fi
