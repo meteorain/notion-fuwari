@@ -64,6 +64,7 @@ export type NavBarConfig = {
 
 export type ProfileConfig = {
 	avatar?: string;
+	avatars?: string[]; // 支持多个头像随机显示
 	name: string;
 	bio?: string;
 	links: {
