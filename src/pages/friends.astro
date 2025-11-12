@@ -49,9 +49,12 @@ const { friends } = friendsData as FriendsData;
         </div>
     </div>
 
+    <!-- Toast 通知容器 -->
+    <div id="toast-container" class="fixed top-20 right-4 z-[10000] flex flex-col gap-2 pointer-events-none"></div>
+
     <!-- 友链申请弹窗 -->
     <div id="friend-link-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center hidden py-8 px-4"
-         onclick="if (event.target === this) { this.classList.add('hidden'); document.body.style.overflow = ''; document.getElementById('friend-link-form').reset(); document.getElementById('form-message').classList.add('hidden'); }">
+         onclick="if (event.target === this) { this.classList.add('hidden'); document.body.style.overflow = ''; document.getElementById('friend-link-form').reset(); }">
         <div class="card-base max-w-lg w-full p-6 md:p-8 animate-modal-appear max-h-[80vh] overflow-y-auto my-auto" onclick="event.stopPropagation()">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-black dark:text-white flex items-center gap-2">
@@ -118,8 +121,6 @@ const { friends } = friendsData as FriendsData;
                     >
                 </div>
 
-                <div id="form-message" class="hidden text-sm py-2 px-4 rounded-lg"></div>
-
                 <div class="flex gap-3 pt-4 pb-2">
                     <button
                         type="submit"
@@ -130,7 +131,7 @@ const { friends } = friendsData as FriendsData;
                     </button>
                     <button
                         type="button"
-                        onclick="document.getElementById('friend-link-modal').classList.add('hidden'); document.body.style.overflow = ''; document.getElementById('friend-link-form').reset(); document.getElementById('form-message').classList.add('hidden');"
+                        onclick="document.getElementById('friend-link-modal').classList.add('hidden'); document.body.style.overflow = ''; document.getElementById('friend-link-form').reset();"
                         class="px-6 py-2.5 rounded-lg font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
                     >
                         取消
@@ -199,12 +200,42 @@ const { friends } = friendsData as FriendsData;
 </style>
 
 <script is:inline>
+    // Toast 通知函数
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+
+        // 设置样式
+        const bgColor = type === 'success'
+            ? 'bg-green-500 dark:bg-green-600'
+            : 'bg-red-500 dark:bg-red-600';
+
+        toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg pointer-events-auto transform transition-all duration-300 ease-out translate-x-full opacity-0`;
+        toast.textContent = message;
+
+        container.appendChild(toast);
+
+        // 触发动画
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+            });
+        });
+
+        // 3秒后移除
+        setTimeout(() => {
+            toast.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                container.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+
     async function handleSubmit(event) {
         event.preventDefault();
 
         const form = event.target;
         const submitBtn = document.getElementById('submit-btn');
-        const formMessage = document.getElementById('form-message');
 
         const formData = new FormData(form);
         const data = {
@@ -227,25 +258,19 @@ const { friends } = friendsData as FriendsData;
             const result = await response.json();
 
             if (result.success) {
-                formMessage.textContent = result.message;
-                formMessage.className = 'text-sm py-2 px-4 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300';
-                formMessage.classList.remove('hidden');
+                showToast(result.message, 'success');
 
+                // 关闭弹窗并重置表单
                 setTimeout(() => {
                     document.getElementById('friend-link-modal').classList.add('hidden');
                     document.body.style.overflow = '';
                     form.reset();
-                    formMessage.classList.add('hidden');
-                }, 2000);
+                }, 500);
             } else {
-                formMessage.textContent = result.message;
-                formMessage.className = 'text-sm py-2 px-4 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300';
-                formMessage.classList.remove('hidden');
+                showToast(result.message, 'error');
             }
         } catch (error) {
-            formMessage.textContent = '网络错误，请稍后重试';
-            formMessage.className = 'text-sm py-2 px-4 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300';
-            formMessage.classList.remove('hidden');
+            showToast('网络错误，请稍后重试', 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = '提交申请';
