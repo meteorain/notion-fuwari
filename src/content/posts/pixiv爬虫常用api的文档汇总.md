@@ -2,7 +2,7 @@
 title: 'Pixiv爬虫常用API的文档汇总'
 published: 2025-10-08
 description: '开发 Pixiv 爬虫的过程中，我深入研究了 Pixiv 的各种 API 接口。本文将基于实际的爬虫实现，详细介绍 Pixiv 的主要 API 接口、请求格式以及返回数据结构，希望能为其他开发者提供参考。'
-image: ''
+image: '../assets/images/pixiv爬虫常用api的文档汇总/cover.jpg'
 tags: ["爬虫", "pixiv", "好玩"]
 draft: false
 lang: ''
