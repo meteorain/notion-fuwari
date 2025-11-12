@@ -1,6 +1,6 @@
 ---
 title: 'Pixiv爬虫/下载/代理，无需服务器即可一键部署！'
-published: 2025-11-12
+published: 2025-10-07
 description: '把去年用python写的pixiv爬虫项目用AI和serverless架构重写了一下，支持定时任务，支持下载，支持代理访问。'
 image: ''
 tags: ["爬虫", "serverless", "pixiv", "好玩"]
@@ -563,4 +563,7 @@ GROUP BY level;
 
 
 **如果这篇文章对你有帮助，请给项目点个 ⭐ Star！**
+
+
+![v2-a211000410c25bbc31bbac49312d1020_1440w.png](../assets/images/pixiv爬虫-下载-代理-无需服务器即可一键部署/image-1.png)
 
