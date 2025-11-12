@@ -250,7 +250,7 @@ async function processPost(page) {
   // 获取文章属性
   const title = properties.Title?.title[0]?.plain_text || 'Untitled';
   const slug = generateSlug(title);
-  const coverImage = properties['Featured Image']?.url;
+  const coverImage = properties['Featured Image']?.files[0]?.file.url
   const publishedDate = properties['Published Date']?.date?.start || new Date().toISOString();
   const tags = properties.Tags?.multi_select?.map(tag => tag.name) || [];
   const category = properties.Category?.select?.name;
