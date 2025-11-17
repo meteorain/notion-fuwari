@@ -120,3 +120,36 @@ export type GitHubEditConfig = {
 	enable: boolean;
 	baseUrl: string;
 };
+
+export type AnalyticsConfig = {
+	// Umami 云端分析
+	umamiCloud?: {
+		enable: boolean;
+		websiteId: string;
+	};
+	// 百度统计
+	baidu?: {
+		enable: boolean;
+		id: string;
+	};
+	// Microsoft Clarity
+	clarity?: {
+		enable: boolean;
+		projectId: string;
+	};
+	// Google AdSense
+	googleAdsense?: {
+		enable: boolean;
+		publisherId: string;
+	};
+	// Google Analytics
+	googleAnalytics?: {
+		enable: boolean;
+		measurementId: string;
+	};
+	// Cloudflare Web Analytics
+	cloudflare?: {
+		enable: boolean;
+		token: string;
+	};
+};

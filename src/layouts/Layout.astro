@@ -4,7 +4,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import { profileConfig, siteConfig } from "@/config";
+import { profileConfig, siteConfig, analyticsConfig } from "@/config";
 import ConfigCarrier from "@components/ConfigCarrier.astro";
 import {
 	AUTO_MODE,
@@ -39,11 +39,8 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 // defines global css variables
 // why doing this in Layout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
 const configHue = siteConfig.themeColor.hue;
-if (!banner || typeof banner !== "string" || banner.trim() === "") {
-	banner = siteConfig.banner.src;
-}
 
-// TODO don't use post cover as banner for now
+// 使用全局横幅配置
 banner = siteConfig.banner.src;
 
 const enableBanner = siteConfig.banner.enable;
@@ -114,8 +111,7 @@ const bannerOffset =
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<script src="/js/umami-share.js" defer></script>
-		
+
 		{/* <!-- Content Security Policy -->
 		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://giscus.app https://hpic.072103.xyz https://umami.2x.nz https://hm.baidu.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://static.cloudflareinsights.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline' https://giscus.app https://fonts.googleapis.com https://api.iconify.design; font-src 'self' https://fonts.gstatic.com https://api.iconify.design; img-src 'self' data: https: http:; connect-src 'self' https://umami.2x.nz https://hm.baidu.com https://www.google-analytics.com https://analytics.google.com https://api.iconify.design https://static.cloudflareinsights.com https://pic.2x.nz https://q2.qlogo.cn https://ep1.adtrafficquality.google https://googleads.g.doubleclick.net; frame-src 'self' https://giscus.app *.bilibili.com https://www.google.com https://googleads.g.doubleclick.net https://support.nodeget.com https://*.adtrafficquality.google; object-src 'none'; base-uri 'self'; form-action 'self';"> */}
 		{favicons.map(favicon => (
@@ -241,44 +237,78 @@ const bannerOffset =
 		<slot name="head"></slot>
 
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
-		
-		<!-- Umami分析（云-备用） -->
-		<script defer src="https://cloud.umami.is/script.js" data-website-id="526149f7-e7d5-40ac-ae75-50a0c2515abf"></script>
-		<!-- 百度统计 -->
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?b219eaad631b87d273cfe72148b2138b";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
 
-<!-- clarity 分析 -->
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "t8f0gmcwtx");
-</script>
-<!-- gad -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1683686345039700"
-     crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-1683686345039700">
+		<!-- 分析和广告脚本（根据配置动态加载） -->
 
-		<!-- 谷歌分析 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9Z4LT4H8KH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+		{/* Umami 云端分析 */}
+		{analyticsConfig.umamiCloud?.enable && (
+			<script
+				defer
+				src="https://cloud.umami.is/script.js"
+				data-website-id={analyticsConfig.umamiCloud.websiteId}>
+			</script>
+		)}
 
-  gtag('config', 'G-9Z4LT4H8KH');
-</script>
+		{/* 百度统计 */}
+		{analyticsConfig.baidu?.enable && (
+			<script is:inline define:vars={{ baiduId: analyticsConfig.baidu.id }}>
+				var _hmt = _hmt || [];
+				(function() {
+					var hm = document.createElement("script");
+					hm.src = "https://hm.baidu.com/hm.js?" + baiduId;
+					var s = document.getElementsByTagName("script")[0];
+					s.parentNode.insertBefore(hm, s);
+				})();
+			</script>
+		)}
 
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "15fe148e91b34f10a15652e1a74ab26c"}'></script><!-- End Cloudflare Web Analytics -->
+		{/* Microsoft Clarity */}
+		{analyticsConfig.clarity?.enable && (
+			<script is:inline define:vars={{ clarityId: analyticsConfig.clarity.projectId }}>
+				(function(c,l,a,r,i,t,y){
+					c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+					t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+					y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+				})(window, document, "clarity", "script", clarityId);
+			</script>
+		)}
+
+		{/* Google AdSense */}
+		{analyticsConfig.googleAdsense?.enable && (
+			<>
+				<script
+					async
+					src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${analyticsConfig.googleAdsense.publisherId}`}
+					crossorigin="anonymous">
+				</script>
+				<meta name="google-adsense-account" content={analyticsConfig.googleAdsense.publisherId} />
+			</>
+		)}
+
+		{/* Google Analytics */}
+		{analyticsConfig.googleAnalytics?.enable && (
+			<>
+				<script
+					async
+					src={`https://www.googletagmanager.com/gtag/js?id=${analyticsConfig.googleAnalytics.measurementId}`}>
+				</script>
+				<script is:inline define:vars={{ gaId: analyticsConfig.googleAnalytics.measurementId }}>
+					window.dataLayer = window.dataLayer || [];
+					function gtag(){dataLayer.push(arguments);}
+					gtag('js', new Date());
+					gtag('config', gaId);
+				</script>
+			</>
+		)}
+
+		{/* Cloudflare Web Analytics */}
+		{analyticsConfig.cloudflare?.enable && (
+			<script
+				defer
+				src='https://static.cloudflareinsights.com/beacon.min.js'
+				data-cf-beacon={JSON.stringify({ token: analyticsConfig.cloudflare.token })}>
+			</script>
+		)}
 	</head>
 	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
 		  data-overlayscrollbars-initialize

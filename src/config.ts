@@ -7,6 +7,7 @@ import type {
 	ProfileConfig,
 	SiteConfig,
 	UmamiConfig,
+	AnalyticsConfig,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
 
@@ -25,7 +26,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: false,
-		src: "/xinghui.avif", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+		src: "/background/back.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
@@ -146,4 +147,39 @@ export const statsConfig = {
 	loadingText: "统计加载中...",
 	unavailableText: "统计不可用。请检查是否屏蔽了Umami域名，如AdGuard和AdBlock等插件",
 	getStatsText: (pageViews: number, visits: number) => `${statsConfig.viewsText} ${pageViews} · ${statsConfig.visitsText} ${visits}`,
+};
+
+// 分析和广告配置
+// 如果不需要某项服务，可以删除对应配置或设置 enable: false
+export const analyticsConfig: AnalyticsConfig = {
+	// Umami 云端分析（原作者的配置，建议删除或替换）
+	umamiCloud: {
+		enable: true,
+		websiteId: "526149f7-e7d5-40ac-ae75-50a0c2515abf",
+	},
+	// 百度统计（原作者的配置，建议删除或替换）
+	baidu: {
+		enable: false,
+		id: "b219eaad631b87d273cfe72148b2138b",
+	},
+	// Microsoft Clarity（原作者的配置，建议删除或替换）
+	clarity: {
+		enable: false,
+		projectId: "t8f0gmcwtx",
+	},
+	// Google AdSense（原作者的广告ID，建议删除或替换）
+	googleAdsense: {
+		enable: false,
+		publisherId: "ca-pub-1683686345039700",
+	},
+	// Google Analytics（原作者的配置，建议删除或替换）
+	googleAnalytics: {
+		enable: true,
+		measurementId: "G-D9ZRKT7G85",
+	},
+	// Cloudflare Web Analytics（原作者的配置，建议删除或替换）
+	cloudflare: {
+		enable: false,
+		token: "15fe148e91b34f10a15652e1a74ab26c",
+	},
 };
