@@ -15,6 +15,7 @@ interface SearchResult {
 	};
 	excerpt: string;
 	urlPath?: string;
+	image?: string; // 添加封面图片字段
 }
 
 let keywordDesktop = "";
@@ -59,37 +60,39 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 			.filter((post) => {
 				const keywordLower = keyword.toLowerCase();
 				const searchText =
-					`${post.title} ${post.description} ${post.content}`.toLowerCase();
-				const urlPath = `/posts/${post.link}`;
-				
+					`${post.title} ${post.description} ${post.excerpt}`.toLowerCase();
+				const urlPath = `/posts/${post.slug}`;
+
 				// 支持内容搜索和URL后缀搜索
-				return searchText.includes(keywordLower) || 
+				return searchText.includes(keywordLower) ||
 					   urlPath.toLowerCase().includes(keywordLower) ||
-					   post.link.toLowerCase().includes(keywordLower);
+					   post.slug.toLowerCase().includes(keywordLower);
 			})
 			.map((post) => {
-				const contentLower = post.content.toLowerCase();
+				const descLower = (post.excerpt || post.description || '').toLowerCase();
 				const keywordLower = keyword.toLowerCase();
-				const contentIndex = contentLower.indexOf(keywordLower);
-				
+				const contentIndex = descLower.indexOf(keywordLower);
+
 				let excerpt = '';
 				if (contentIndex !== -1) {
+					const fullText = post.excerpt || post.description || '';
 					const start = Math.max(0, contentIndex - 50);
-					const end = Math.min(post.content.length, contentIndex + 100);
-					excerpt = post.content.substring(start, end);
+					const end = Math.min(fullText.length, contentIndex + 100);
+					excerpt = fullText.substring(start, end);
 					if (start > 0) excerpt = '...' + excerpt;
-					if (end < post.content.length) excerpt = excerpt + '...';
+					if (end < fullText.length) excerpt = excerpt + '...';
 				} else {
-					excerpt = post.description || post.content.substring(0, 150) + '...';
+					excerpt = post.description || (post.excerpt ? post.excerpt.substring(0, 150) + '...' : '');
 				}
 
 				return {
-					url: url(`/posts/${post.link}/`),
+					url: url(`/posts/${post.slug}/`),
 					meta: {
 						title: post.title
 					},
 					excerpt: highlightText(excerpt, keyword),
-					urlPath: `/posts/${post.link}`
+					urlPath: `/posts/${post.slug}`,
+					image: post.image || '' // 包含封面图片
 				};
 			});
 
@@ -106,33 +109,21 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 
 onMount(async () => {
 	try {
-		const response = await fetch("/rss.xml");
-		const text = await response.text();
-		const parser = new DOMParser();
-		const xml = parser.parseFromString(text, "text/xml");
-		const items = xml.querySelectorAll("item");
+		// 改用新的搜索数据 API
+		const response = await fetch("/api/search-data.json");
+		const data = await response.json();
 
-		posts = Array.from(items).map((item) => {
-			// 尝试多种方式获取content:encoded内容
-			let content = "";
-			const contentEncoded =
-				item.getElementsByTagNameNS("*", "encoded")[0]?.textContent ||
-				item.querySelector("*|encoded")?.textContent ||
-				"";
-
-			if (contentEncoded) {
-				content = contentEncoded.replace(/<[^>]*>/g, "");
-			}
-
-			return {
-				title: item.querySelector("title")?.textContent || "",
-				description: item.querySelector("description")?.textContent || "",
-				content: content,
-				link: item.querySelector("link")?.textContent?.replace(/.*\/posts\/(.*?)\//, "$1") || "",
-			};
-		});
+		posts = data.map((item: any) => ({
+			title: item.title,
+			description: item.description,
+			slug: item.slug,
+			image: item.image,
+			excerpt: item.excerpt,
+			tags: item.tags,
+			published: item.published,
+		}));
 	} catch (error) {
-		console.error("Error fetching RSS:", error);
+		console.error("Error fetching search data:", error);
 	}
 
 	// 监听语言切换事件
@@ -203,15 +194,32 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
     {#each result as item}
         <a href={item.url}
            class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block
-       rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]">
-            <div class="transition text-90 inline-flex font-bold group-hover:text-[var(--primary)]">
-                {item.meta.title}<Icon icon="fa6-solid:chevron-right" class="transition text-[0.75rem] translate-x-1 my-auto text-[var(--primary)]"></Icon>
-            </div>
-            <div class="transition text-xs text-white mb-1 font-mono">
-                {item.urlPath}
-            </div>
-            <div class="transition text-sm text-50">
-                {@html item.excerpt}
+       rounded-xl px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]
+       {item.image ? 'flex gap-3' : ''}">
+
+            <!-- 文章封面图片（如果有） -->
+            {#if item.image}
+                <div class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-[var(--btn-regular-bg)]">
+                    <img
+                        src={item.image}
+                        alt={item.meta.title}
+                        class="w-full h-full object-cover"
+                        loading="lazy"
+                    />
+                </div>
+            {/if}
+
+            <!-- 文本内容 -->
+            <div class="flex-1 min-w-0">
+                <div class="transition text-90 inline-flex font-bold group-hover:text-[var(--primary)]">
+                    {item.meta.title}<Icon icon="fa6-solid:chevron-right" class="transition text-[0.75rem] translate-x-1 my-auto text-[var(--primary)]"></Icon>
+                </div>
+                <div class="transition text-xs text-50 mb-1 font-mono">
+                    {item.urlPath}
+                </div>
+                <div class="transition text-sm text-50 line-clamp-2">
+                    {@html item.excerpt}
+                </div>
             </div>
         </a>
     {/each}
