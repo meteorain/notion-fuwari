@@ -1,7 +1,7 @@
 ---
 title: 'chromium-1187对应版本的playwright版本'
 published: 2025-11-24
-description: '```javascript'
+description: '家里的电脑跑crawl4ai的时候，发现缺少指定版本的playwright的浏览器，但是这个版本的浏览器直接安装最新的playwright还不行。'
 image: ''
 tags: ["疑难杂症"]
 draft: false
@@ -10,12 +10,12 @@ category: '技术'
 ---
 
 
+家里的电脑跑crawl4ai的时候，发现缺少指定版本的playwright的浏览器，但是这个版本的浏览器直接安装最新的playwright还不行。
+
+
 ```javascript
 BrowserType.launch: Executable doesn't exist at C:\Users\Evepupil\AppData\Local\ms-playwright\chromium-1187\chrome-win\chrome.exe
 ```
-
-
-家里的电脑跑crawl4ai的时候，发现缺少指定版本的playwright的浏览器，但是这个版本的浏览器直接安装最新的playwright还不行。
 
 
 经过反复尝试后，发现是
