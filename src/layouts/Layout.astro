@@ -271,7 +271,8 @@ const bannerOffset =
 			<script
 				defer
 				src="https://cloud.umami.is/script.js"
-				data-website-id={analyticsConfig.umamiCloud.websiteId}>
+				data-website-id={analyticsConfig.umamiCloud.websiteId}
+				data-swup-reload-script="false">
 			</script>
 		)}
 
@@ -305,7 +306,8 @@ const bannerOffset =
 				<script
 					async
 					src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${analyticsConfig.googleAdsense.publisherId}`}
-					crossorigin="anonymous">
+					crossorigin="anonymous"
+					data-swup-reload-script="false">
 				</script>
 				<meta name="google-adsense-account" content={analyticsConfig.googleAdsense.publisherId} />
 			</>
@@ -316,7 +318,8 @@ const bannerOffset =
 			<>
 				<script
 					async
-					src={`https://www.googletagmanager.com/gtag/js?id=${analyticsConfig.googleAnalytics.measurementId}`}>
+					src={`https://www.googletagmanager.com/gtag/js?id=${analyticsConfig.googleAnalytics.measurementId}`}
+					data-swup-reload-script="false">
 				</script>
 				<script is:inline define:vars={{ gaId: analyticsConfig.googleAnalytics.measurementId }}>
 					window.dataLayer = window.dataLayer || [];
@@ -332,7 +335,8 @@ const bannerOffset =
 			<script
 				defer
 				src='https://static.cloudflareinsights.com/beacon.min.js'
-				data-cf-beacon={JSON.stringify({ token: analyticsConfig.cloudflare.token })}>
+				data-cf-beacon={JSON.stringify({ token: analyticsConfig.cloudflare.token })}
+				data-swup-reload-script="false">
 			</script>
 		)}
 	</head>
@@ -561,23 +565,28 @@ function disableAnimation() {
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
 
-function setClickOutsideToClose(panel: string, ignores: string[]) {
-	document.addEventListener("click", event => {
-		let panelDom = document.getElementById(panel);
-		let tDom = event.target;
-		if (!(tDom instanceof Node)) return;		// Ensure the event target is an HTML Node
-		for (let ig of ignores) {
-			let ie = document.getElementById(ig)
-			if (ie == tDom || (ie?.contains(tDom))) {
-				return;
+// 防止重复注册事件监听器的标志
+if (!window.__fuwariInitialized) {
+	window.__fuwariInitialized = true;
+
+	function setClickOutsideToClose(panel: string, ignores: string[]) {
+		document.addEventListener("click", event => {
+			let panelDom = document.getElementById(panel);
+			let tDom = event.target;
+			if (!(tDom instanceof Node)) return;		// Ensure the event target is an HTML Node
+			for (let ig of ignores) {
+				let ie = document.getElementById(ig)
+				if (ie == tDom || (ie?.contains(tDom))) {
+					return;
+				}
 			}
-		}
-		panelDom!.classList.add("float-panel-closed");
-	});
+			panelDom!.classList.add("float-panel-closed");
+		});
+	}
+	setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"])
+	setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"])
+	setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"])
 }
-setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"])
-setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"])
-setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"])
 
 
 function loadTheme() {
@@ -608,7 +617,7 @@ function initCustomScrollbar() {
 			autoHideSuspend: false,
 		},
 	});
-	
+
 	const katexElements = document.querySelectorAll('.katex-display') as NodeListOf<HTMLElement>;
 	katexElements.forEach((ele) => {
 		OverlayScrollbars(ele, {
@@ -621,13 +630,13 @@ function initCustomScrollbar() {
 
 function showBanner() {
 	if (!siteConfig.banner.enable) return;
-	
+
 	const banner = document.getElementById('banner');
 	if (!banner) {
 		console.error('Banner element not found');
 		return;
 	}
-	
+
 	banner.classList.remove('opacity-0', 'scale-105');
 }
 
@@ -642,6 +651,7 @@ function init() {
 /* Load settings when entering the site */
 init();
 
+// 防止重复注册 Swup hooks
 const setup = () => {
 	// TODO: temp solution to change the height of the banner
 /*
@@ -716,10 +726,17 @@ const setup = () => {
         }, 200)
 	});
 }
-if (window?.swup?.hooks) {
+// 只在首次初始化时注册 Swup hooks
+if (window?.swup?.hooks && !window.__fuwariSwupInitialized) {
+	window.__fuwariSwupInitialized = true;
 	setup()
-} else {
-	document.addEventListener('swup:enable', setup)
+} else if (!window.__fuwariSwupInitialized) {
+	document.addEventListener('swup:enable', () => {
+		if (!window.__fuwariSwupInitialized) {
+			window.__fuwariSwupInitialized = true;
+			setup();
+		}
+	})
 }
 
 let backToTopBtn = document.getElementById('back-to-top-btn');
@@ -820,10 +837,17 @@ const setup = () => {
 	)
 }
 
-if (window.swup) {
+// 防止重复初始化 Fancybox
+if (window.swup && !window.__fuwariFancyboxInitialized) {
+	window.__fuwariFancyboxInitialized = true;
 	setup()
-} else {
-	document.addEventListener("swup:enable", setup)
+} else if (!window.__fuwariFancyboxInitialized) {
+	document.addEventListener("swup:enable", () => {
+		if (!window.__fuwariFancyboxInitialized) {
+			window.__fuwariFancyboxInitialized = true;
+			setup();
+		}
+	})
 }
 </script>
 
