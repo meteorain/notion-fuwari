@@ -29,6 +29,6 @@ export async function getStaticPaths() {
 const tag = Astro.params.tag as string;
 ---
 
-<MainGridLayout title={`${tag} - ${t('common.tags', locale)}`} description={`${t('archive.title', locale)} - ${tag}`}>
+<MainGridLayout title={`${tag} - ${t('common.tags', locale)}`} description={`${t('archive.title', locale)} - ${tag}`} hideSidebar={true}>
     <ArchivePanel tags={[tag]}></ArchivePanel>
 </MainGridLayout>

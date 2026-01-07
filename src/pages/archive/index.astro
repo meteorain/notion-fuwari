@@ -7,7 +7,7 @@ import { t, getCurrentLocale } from "../../i18n";
 const locale = getCurrentLocale();
 ---
 
-<MainGridLayout title={t("archive.title", locale)}>
+<MainGridLayout title={t("archive.title", locale)} hideSidebar={true}>
     <ArchivePanel></ArchivePanel>
 </MainGridLayout>
 
