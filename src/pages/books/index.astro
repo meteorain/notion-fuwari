@@ -12,104 +12,117 @@ const statusMap = {
 };
 ---
 <MainGridLayout title="图书" description="图书翻译与阅读" hideSidebar={true}>
-	<div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative">
+	<!-- 标题区域 -->
+	<div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
 		<div class="card-base z-10 px-6 md:px-9 py-6 relative w-full">
-			<div class="flex items-center mb-6">
+			<div class="flex items-center">
 				<div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center mr-3">
 					<Icon name="material-symbols:menu-book-outline" class="text-xl text-white dark:text-black/70" />
 				</div>
 				<h1 class="text-2xl font-bold text-black/90 dark:text-white/90">图书</h1>
 			</div>
+		</div>
+	</div>
 
-			{books.length === 0 ? (
-				<div class="text-center py-12 text-black/50 dark:text-white/50">
-					<Icon name="material-symbols:book-outline" class="text-6xl mb-4 opacity-50" />
-					<p>暂无图书</p>
-				</div>
-			) : (
-				<div class="grid gap-4">
-					{books.map((book) => {
-						const status = statusMap[book.status];
-						return (
-							<a href={`/books/${book.slug}/`} class="group block">
-								<div class="btn-card rounded-xl p-4 md:p-5 transition-all">
-									<div class="flex flex-col md:flex-row gap-4">
+	{books.length === 0 ? (
+		<div class="card-base flex w-full rounded-[var(--radius-large)] overflow-hidden relative">
+			<div class="z-10 px-6 md:px-9 py-12 relative w-full text-center text-black/50 dark:text-white/50">
+				<Icon name="material-symbols:book-outline" class="text-6xl mb-4 opacity-50" />
+				<p>暂无图书</p>
+			</div>
+		</div>
+	) : (
+		<div class="flex flex-col gap-4">
+			{books.map((book) => {
+				const status = statusMap[book.status];
+				return (
+					<a href={`/books/${book.slug}/`} class="group block">
+						<div class="card-base rounded-[var(--radius-large)] overflow-hidden transition-all hover:shadow-lg active:scale-[0.98]">
+							<div class="p-5 md:p-6">
+								<div class="flex flex-col md:flex-row gap-4 md:gap-5">
+									<!-- 封面图 -->
 									<div class="flex-shrink-0">
 										{book.image ? (
 											<img
 												src={book.image}
 												alt={book.title}
-												class="w-full md:w-32 h-40 md:h-44 object-cover rounded-lg"
+												class="w-full md:w-36 h-44 md:h-48 object-cover rounded-lg"
 											/>
 										) : (
-											<div class="w-full md:w-32 h-40 md:h-44 rounded-lg bg-black/5 dark:bg-white/10 flex items-center justify-center">
-												<Icon name="material-symbols:menu-book-outline" class="text-4xl text-black/20 dark:text-white/20" />
+											<div class="w-full md:w-36 h-44 md:h-48 rounded-lg bg-black/5 dark:bg-white/10 flex items-center justify-center">
+												<Icon name="material-symbols:menu-book-outline" class="text-5xl text-black/20 dark:text-white/20" />
 											</div>
 										)}
 									</div>
-										<div class="flex-1 min-w-0">
-											<div class="flex items-start justify-between gap-2 mb-2">
-												<h2 class="text-lg md:text-xl font-bold text-black/90 dark:text-white/90 group-hover:text-[var(--primary)] transition-colors">
-													{book.title}
-												</h2>
-												<span class={`flex-shrink-0 px-2 py-0.5 text-xs font-medium rounded ${status.color}`}>
-													{status.text}
-												</span>
-											</div>
 
-											{(book.author || book.translator) && (
-												<div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-black/60 dark:text-white/60 mb-2">
-													{book.author && (
-														<span class="flex items-center gap-1">
-															<Icon name="material-symbols:person-outline" class="text-base" />
-															原作: {book.author}
-														</span>
-													)}
-													{book.translator && (
-														<span class="flex items-center gap-1">
-															<Icon name="material-symbols:translate" class="text-base" />
-															译者: {book.translator}
-														</span>
-													)}
-												</div>
-											)}
+									<!-- 图书信息 -->
+									<div class="flex-1 min-w-0 flex flex-col">
+										<!-- 标题和状态 -->
+										<div class="flex items-start justify-between gap-3 mb-2">
+											<h2 class="text-xl md:text-2xl font-bold text-black/90 dark:text-white/90 group-hover:text-[var(--primary)] transition-colors">
+												{book.title}
+											</h2>
+											<span class={`flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-md ${status.color}`}>
+												{status.text}
+											</span>
+										</div>
 
-											{book.description && (
-												<p class="text-sm text-black/70 dark:text-white/70 mb-3 line-clamp-2">
-													{book.description}
-												</p>
-											)}
-
-											<div class="flex flex-wrap items-center gap-3 text-xs text-black/50 dark:text-white/50">
-												<span class="flex items-center gap-1">
-													<Icon name="material-symbols:format-list-numbered" class="text-sm" />
-													{book.chapterCount} 章
-												</span>
-												{book.updated && (
-													<span class="flex items-center gap-1">
-														<Icon name="material-symbols:update" class="text-sm" />
-														更新于 {book.updated.toLocaleDateString('zh-CN')}
+										<!-- 作者和译者 -->
+										{(book.author || book.translator) && (
+											<div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-black/60 dark:text-white/60 mb-3">
+												{book.author && (
+													<span class="flex items-center gap-1.5">
+														<Icon name="material-symbols:person-outline" class="text-base" />
+														<span>原作: {book.author}</span>
+													</span>
+												)}
+												{book.translator && (
+													<span class="flex items-center gap-1.5">
+														<Icon name="material-symbols:translate" class="text-base" />
+														<span>译者: {book.translator}</span>
 													</span>
 												)}
 											</div>
+										)}
 
-											{book.tags.length > 0 && (
-												<div class="flex flex-wrap gap-1.5 mt-3">
-													{book.tags.map((tag) => (
-														<span class="px-2 py-0.5 text-xs bg-black/5 dark:bg-white/10 text-black/60 dark:text-white/60 rounded">
-															{tag}
-														</span>
-													))}
-												</div>
+										<!-- 描述 -->
+										{book.description && (
+											<p class="text-sm text-black/70 dark:text-white/70 mb-3 line-clamp-2 leading-relaxed">
+												{book.description}
+											</p>
+										)}
+
+										<!-- 章节数和更新时间 -->
+										<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-black/50 dark:text-white/50 mb-3">
+											<span class="flex items-center gap-1">
+												<Icon name="material-symbols:format-list-numbered" class="text-sm" />
+												<span>{book.chapterCount} 章</span>
+											</span>
+											{book.updated && (
+												<span class="flex items-center gap-1">
+													<Icon name="material-symbols:update" class="text-sm" />
+													<span>更新于 {book.updated.toLocaleDateString('zh-CN')}</span>
+												</span>
 											)}
 										</div>
+
+										<!-- 标签 -->
+										{book.tags.length > 0 && (
+											<div class="flex flex-wrap gap-1.5 mt-auto">
+												{book.tags.map((tag) => (
+													<span class="px-2.5 py-1 text-xs bg-black/5 dark:bg-white/10 text-black/60 dark:text-white/60 rounded-md">
+														{tag}
+													</span>
+												))}
+											</div>
+										)}
 									</div>
 								</div>
-							</a>
-						);
-					})}
-				</div>
-			)}
+							</div>
+						</div>
+					</a>
+				);
+			})}
 		</div>
-	</div>
+	)}
 </MainGridLayout>
