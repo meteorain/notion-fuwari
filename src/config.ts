@@ -80,6 +80,11 @@ export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
 		LinkPreset.Archive,
+		{
+			name: "图书",
+			url: "/books/",
+			external: false,
+		},
 		LinkPreset.About,
 		{
 			name: "友链",
