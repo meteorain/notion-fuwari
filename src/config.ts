@@ -192,7 +192,7 @@ export const analyticsConfig: AnalyticsConfig = {
 
 // AI 聊天配置
 export const aiChatConfig = {
-	enable: false, // 设置为 true 启用 AI 聊天功能
+	enable: true, // 设置为 true 启用 AI 聊天功能
 	// API 端点 - 需要用户配置自己的 CF Worker 代理
 	// 示例：https://your-worker.your-subdomain.workers.dev/ai-search
 	apiEndpoint: "",

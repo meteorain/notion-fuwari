@@ -31,6 +31,13 @@
 		loading = true;
 		error = '';
 
+		// 检查是否配置了 API 端点
+		if (!API_ENDPOINT) {
+			error = '请先在 src/config.ts 中配置 aiChatConfig.apiEndpoint';
+			loading = false;
+			return;
+		}
+
 		// 添加用户消息
 		messages = [...messages, { role: 'user', content: userMessage }];
 		scrollToBottom();

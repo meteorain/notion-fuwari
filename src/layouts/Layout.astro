@@ -466,7 +466,7 @@ const bannerOffset =
 <Analytics />
 
 <!-- AI 聊天窗口 -->
-{import.meta.env.PROD && aiChatConfig.enable && aiChatConfig.apiEndpoint && (
+{aiChatConfig.enable && (
 	<AIChatWidget client:load />
 )}
 
