@@ -1,0 +1,17 @@
+# 测试文件
+
+这是一个用于测试 markitdown 转换功能的示例文本文件。
+
+## 功能特性
+
+- 支持多种文件格式转换
+- 自动生成 Markdown 输出
+- 提供详细的统计信息
+
+## 使用示例
+
+```bash
+pnpm convert test-sample.txt
+```
+
+这将生成一个 test-sample.md 文件。
