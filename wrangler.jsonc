@@ -1,9 +1,7 @@
 {
     "name": "notion-fuwari",
     "compatibility_date": "2025-08-11",
-    "assets": {
-      "directory": "./dist"
-    },
+    "pages_build_output_dir": "./dist",
     "ai": {
       "binding": "AI"
     }
