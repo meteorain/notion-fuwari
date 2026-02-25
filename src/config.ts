@@ -12,17 +12,17 @@ import type {
 import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "潮思Chaosyn",
-	subtitle: "技术探索与思维进化",
+	title: "刘疏影",
+	subtitle: "Shadow of Hope",
 	description:
-		"分享Serverless架构、AI应用开发、认知科学、科学学习方法与前后端技术实践的个人博客，专注于云原生、无服务器计算和智能应用开发，探索技术如何赋能学习与创新",
+		"无",
 
 	keywords: [],
 	lang: "zh_CN", // 'en', 'zh_CN', 'zh_TW', 'ja', 'ko', 'es', 'th'
 	themeColor: {
-		hue: 205, // 浅蓝色配色方案
-		fixed: true, // Hide the theme color picker for visitors
-		forceDarkMode: false, // 允许切换浅色/暗色模式
+		hue: 330, // 浅蓝色配色方案
+		fixed: false, // Hide the theme color picker for visitors
+		forceDarkMode: true, // 允许切换浅色/暗色模式
 	},
 	banner: {
 		enable: false,
@@ -80,17 +80,7 @@ export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
 		LinkPreset.Archive,
-		{
-			name: "图书",
-			url: "/books/",
-			external: false,
-		},
 		LinkPreset.About,
-		{
-			name: "统计",
-			url: "https://cloud.umami.is/share/VOIhBeLJ4qp3otfX", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
-		},
 	],
 };
 
@@ -102,36 +92,36 @@ export const profileConfig: ProfileConfig = {
 		"/profile/avatar/69108294_p7.jpg",
 		"/profile/avatar/98308336_p5.png",
 	],
-	name: "叶桐",
-	bio: "無くした日々にさよなら",
+	name: "刘疏影",
+	bio: "Shadow of Hope",
 	links: [
 		{
-			name: "知乎",
-			icon: "fa6-brands:zhihu",
-			url: "https://www.zhihu.com/people/ye-tong-95-79",
+			name: "LIUWEINAN",
+			icon: "fa6-brands:bilibili",
+			url: "https://liuweinan.com",
 		},
 		{
 			name: "GitHub",
 			icon: "fa6-brands:github",
-			url: "https://github.com/evepupil",
+			url: "https://github.com/meteorain/notion-fuwari",
 		},
 	],
 };
 
 export const licenseConfig: LicenseConfig = {
-	enable: true,
-	name: "CC BY-NC-SA 4.0",
-	url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+	enable: false,
+	name: "LIUWEINAN",
+	url: "https://liuweinan.com",
 };
 
 export const imageFallbackConfig: ImageFallbackConfig = {
-	enable: true,
+	enable: false,
 	originalDomain: "eo-r2.2x.nz",
 	fallbackDomain: "pub-d433ca7edaa74994b3d7c40a7fd7d9ac.r2.dev",
 };
 
 export const umamiConfig: UmamiConfig = {
-	enable: true,
+	enable: false,
 	baseUrl: "https://cloud.umami.is",
 	shareId: "VOIhBeLJ4qp3otfX", // ⚠️ 请替换为你自己的 Share ID，不要用原作者的
 	timezone: "Asia/Shanghai",
@@ -142,7 +132,7 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 };
 
 export const gitHubEditConfig: GitHubEditConfig = {
-	enable: true,
+	enable: false,
 	baseUrl: "https://github.com/evepupil/notion-fuwari/blob/master/src/content/posts",
 };
 
@@ -160,7 +150,7 @@ export const statsConfig = {
 export const analyticsConfig: AnalyticsConfig = {
 	// Umami 云端分析（原作者的配置，建议删除或替换）
 	umamiCloud: {
-		enable: true,
+		enable: false,
 		websiteId: "526149f7-e7d5-40ac-ae75-50a0c2515abf",
 	},
 	// 百度统计（原作者的配置，建议删除或替换）
@@ -180,7 +170,7 @@ export const analyticsConfig: AnalyticsConfig = {
 	},
 	// Google Analytics（原作者的配置，建议删除或替换）
 	googleAnalytics: {
-		enable: true,
+		enable: false,
 		measurementId: "G-D9ZRKT7G85",
 	},
 	// Cloudflare Web Analytics（原作者的配置，建议删除或替换）
