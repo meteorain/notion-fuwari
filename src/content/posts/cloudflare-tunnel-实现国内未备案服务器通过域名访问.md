@@ -5,7 +5,8 @@ description: 'Cloudflare Tunnel 通过本地 `cloudflared` 进程建立 **出站
 image: ''
 tags: ["Cloudflare"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'cloudflare-tunnel-实现国内未备案服务器通过域名访问'
 category: '技术'
 ---
 

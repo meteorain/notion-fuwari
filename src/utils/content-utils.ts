@@ -1,9 +1,30 @@
 import { getCollection } from "astro:content";
 
+type PostLocale = "zh-CN" | "en";
 
-export async function getSortedPosts() {
+function normalizeLocale(locale?: string): PostLocale {
+	const normalized = locale?.replace(/_/g, "-").toLowerCase();
+	return normalized === "en" ? "en" : "zh-CN";
+}
+
+function matchPostLocale(lang: string | undefined, locale: PostLocale): boolean {
+	if (locale === "en") {
+		return lang === "en";
+	}
+
+	return lang === undefined || lang === "" || lang === "zh-CN" || lang === "zh_CN";
+}
+
+
+export async function getSortedPosts(locale?: string) {
+	const shouldFilterByLocale = typeof locale === "string" && locale.trim() !== "";
+	const currentLocale = shouldFilterByLocale ? normalizeLocale(locale) : null;
+
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
+		const draftPassed = import.meta.env.PROD ? data.draft !== true : true;
+		if (!draftPassed) return false;
+		if (!currentLocale) return true;
+		return matchPostLocale(data.lang, currentLocale);
 	});
 	const sorted = allBlogPosts.sort((a, b) => {
 		// 如果一个是置顶一个不是置顶，置顶的排在前面
@@ -15,6 +36,13 @@ export async function getSortedPosts() {
 		const dateB = new Date(b.data.published);
 		return dateA > dateB ? -1 : 1;
 	});
+
+	for (const post of sorted) {
+		post.data.prevSlug = "";
+		post.data.prevTitle = "";
+		post.data.nextSlug = "";
+		post.data.nextTitle = "";
+	}
 
 	for (let i = 1; i < sorted.length; i++) {
 		sorted[i].data.nextSlug = sorted[i - 1].slug;
@@ -33,9 +61,15 @@ export type Tag = {
 	count: number;
 };
 
-export async function getTagList(): Promise<Tag[]> {
+export async function getTagList(locale?: string): Promise<Tag[]> {
+	const shouldFilterByLocale = typeof locale === "string" && locale.trim() !== "";
+	const currentLocale = shouldFilterByLocale ? normalizeLocale(locale) : null;
+
 	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
+		const draftPassed = import.meta.env.PROD ? data.draft !== true : true;
+		if (!draftPassed) return false;
+		if (!currentLocale) return true;
+		return matchPostLocale(data.lang, currentLocale);
 	});
 
 	const countMap: { [key: string]: number } = {};

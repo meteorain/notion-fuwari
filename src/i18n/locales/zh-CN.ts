@@ -3,7 +3,9 @@ export const zhCN = {
 	// 导航
 	nav: {
 		home: "首页",
+		blog: "博客",
 		archive: "归档",
+		books: "图书",
 		about: "关于",
 		friends: "友链",
 		sponsors: "赞助",

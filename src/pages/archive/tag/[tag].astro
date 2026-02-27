@@ -1,6 +1,5 @@
 ---
 import ArchivePanel from "@components/ArchivePanel.astro";
-
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
 import { t, getCurrentLocale } from "../../../i18n";
@@ -8,11 +7,9 @@ import { t, getCurrentLocale } from "../../../i18n";
 const locale = getCurrentLocale();
 
 export async function getStaticPaths() {
-	const posts = await getSortedPosts();
+	const localePosts = await getSortedPosts("zh-CN");
 
-	// タグを集めるための Set の型を指定
-	const allTags = posts.reduce<Set<string>>((acc, post) => {
-		// biome-ignore lint/complexity/noForEach: <explanation>
+	const allTags = localePosts.reduce<Set<string>>((acc, post) => {
 		post.data.tags.forEach((tag) => acc.add(tag));
 		return acc;
 	}, new Set());
@@ -21,7 +18,7 @@ export async function getStaticPaths() {
 
 	return allTagsArray.map((tag) => ({
 		params: {
-			tag: tag,
+			tag,
 		},
 	}));
 }
@@ -29,6 +26,6 @@ export async function getStaticPaths() {
 const tag = Astro.params.tag as string;
 ---
 
-<MainGridLayout title={`${tag} - ${t('common.tags', locale)}`} description={`${t('archive.title', locale)} - ${tag}`} hideSidebar={true}>
-    <ArchivePanel tags={[tag]}></ArchivePanel>
+<MainGridLayout title={`${tag} - ${t("common.tags", locale)}`} description={`${t("archive.title", locale)} - ${tag}`} hideSidebar={true}>
+	<ArchivePanel tags={[tag]} locale={locale}></ArchivePanel>
 </MainGridLayout>

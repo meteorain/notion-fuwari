@@ -5,7 +5,8 @@ description: '最近给博客加了个 AI 助手功能，可以智能检索博�
 image: ''
 tags: ["serverless", "Cloudflare", "RAG", "AI"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'cloudflare-ai-search-autorag-接入实战-个人博客的知识库ai助手'
 category: '技术'
 ---
 

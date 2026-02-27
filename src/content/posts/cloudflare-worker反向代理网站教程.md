@@ -5,7 +5,8 @@ description: '反向代理就是**代替你访问目标网站**，然后把结�
 image: '../assets/images/cloudflare-worker反向代理网站教程/cover.jpg'
 tags: ["Cloudflare", "好玩", "serverless"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'cloudflare-worker反向代理网站教程'
 category: '技术'
 ---
 

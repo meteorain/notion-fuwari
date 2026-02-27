@@ -9,7 +9,15 @@ const postsCollection = defineCollection({
 		description: z.string().optional().default(""),
 		image: z.string().optional().default(""),
 		tags: z.array(z.string()).optional().default([]),
-		lang: z.string().optional().default(""),
+		lang: z
+			.preprocess((value) => {
+				if (typeof value !== "string") return value;
+				if (value === "" || value === "zh_CN") return "zh-CN";
+				return value;
+			}, z.enum(["zh-CN", "en"]))
+			.optional()
+			.default("zh-CN"),
+		translationKey: z.string().optional().default(""),
 		pinned: z.boolean().optional().default(false),
 
 		/* For internal use */

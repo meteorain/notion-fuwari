@@ -5,29 +5,88 @@ import { url } from "../../utils/url-utils";
 
 interface Props {
 	links: NavBarLink[];
+	locale?: "zh-CN" | "en";
 }
 
 const links = Astro.props.links;
+const locale = Astro.props.locale || "zh-CN";
+
+function ensureTrailingSlash(path: string): string {
+	if (!path) return "/";
+	if (path === "/") return "/";
+	return path.endsWith("/") ? path : `${path}/`;
+}
+
+function localizeNavPath(path: string, targetLocale: "zh-CN" | "en"): string {
+	const normalized = path === "/" ? "/" : path.replace(/\/+$/, "");
+
+	if (normalized === "/" || normalized === "/posts" || normalized === "/posts/en") {
+		return targetLocale === "en" ? "/posts/en/" : "/posts/";
+	}
+	if (normalized === "/archive" || normalized === "/archive/en") {
+		return targetLocale === "en" ? "/archive/en/" : "/archive/";
+	}
+	if (normalized.startsWith("/archive/tag/")) {
+		return targetLocale === "en"
+			? ensureTrailingSlash(normalized.replace("/archive/tag/", "/archive/en/tag/"))
+			: ensureTrailingSlash(normalized);
+	}
+	if (normalized.startsWith("/archive/en/tag/")) {
+		return targetLocale === "en"
+			? ensureTrailingSlash(normalized)
+			: ensureTrailingSlash(normalized.replace("/archive/en/tag/", "/archive/tag/"));
+	}
+	if (normalized === "/about" || normalized === "/about/en") {
+		return targetLocale === "en" ? "/about/en/" : "/about/";
+	}
+	if (normalized === "/friends" || normalized === "/friends/en") {
+		return targetLocale === "en" ? "/friends/en/" : "/friends/";
+	}
+	if (normalized === "/sponsors" || normalized === "/sponsors/en") {
+		return targetLocale === "en" ? "/sponsors/en/" : "/sponsors/";
+	}
+
+	return ensureTrailingSlash(normalized);
+}
+
+function normalizeInternalNavPath(path: string): string {
+	const normalized = path === "/" ? "/" : path.replace(/\/+$/, "");
+	if (normalized.endsWith("/en")) {
+		const withoutLocale = normalized.slice(0, -3);
+		return withoutLocale || "/";
+	}
+	return normalized;
+}
+
+function getNavI18nKeyByPath(path: string): string | undefined {
+	const normalizedPath = normalizeInternalNavPath(path);
+	if (normalizedPath === "/" || normalizedPath === "/posts") return "nav.blog";
+	if (normalizedPath === "/books") return "nav.books";
+	if (normalizedPath === "/archive") return "nav.archive";
+	if (normalizedPath === "/about") return "nav.about";
+	if (normalizedPath === "/friends") return "nav.friends";
+	if (normalizedPath === "/sponsors") return "nav.sponsors";
+	return undefined;
+}
+
+function getExternalNavI18nKey(url: string): string | undefined {
+	if (/cloud\.umami\.is\/share\//i.test(url)) return "nav.statistics";
+	return undefined;
+}
 ---
 <div id="nav-menu-panel" class:list={["float-panel float-panel-closed absolute transition-all fixed right-4 px-2 py-2"]}>
     {(() => {
-        const keyMap = {
-            "首页": "nav.home",
-            "归档": "nav.archive",
-            "关于": "nav.about",
-            "友链": "nav.friends",
-            "赞助": "nav.sponsors",
-            "统计": "nav.statistics",
-            "状态": "nav.status"
-        };
         return links.map((link) => {
-            const dataKey = keyMap[link.name] || link.name;
+            const dataKey = link.external
+                ? getExternalNavI18nKey(link.url) || link.name
+                : getNavI18nKeyByPath(link.url) || link.name;
             return (
-                <a href={link.external ? link.url : url(link.url)} class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
+                <a href={link.external ? link.url : url(localizeNavPath(link.url, locale))} class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
                     hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition
                 "
                    target={link.external ? "_blank" : null}
                    data-i18n-key={dataKey}
+                   data-nav-path={link.external ? undefined : link.url}
                 >
                     <div class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]" data-i18n-key={dataKey}>
                         {link.name}

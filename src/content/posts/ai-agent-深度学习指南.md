@@ -5,7 +5,8 @@ description: '> 从”会调 SDK”到”真正理解 Agent”的完整学习路
 image: ''
 tags: ["AI"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'ai-agent-深度学习指南'
 category: '技术'
 ---
 

@@ -298,7 +298,8 @@ description: '${description.replace(/'/g, "''")}'
 image: '${localCoverImage}'
 tags: [${tags.map(tag => `"${tag}"`).join(', ')}]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: '${slug}'
 ${categoryLine}---
 
 `;

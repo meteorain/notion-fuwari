@@ -1,32 +1,32 @@
 ---
-import MainGridLayout from "../layouts/MainGridLayout.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
 
 import { getEntry } from "astro:content";
 import { render } from "astro:content";
 import Markdown from "@components/misc/Markdown.astro";
-import { t, getCurrentLocale } from "../i18n";
+import { t } from "@/i18n";
 
-const aboutPost = await getEntry("spec", "about");
+const aboutPost = (await getEntry("spec", "about-en")) ?? (await getEntry("spec", "about"));
 
 if (!aboutPost) {
 	throw new Error("About page content not found");
 }
 
 const { Content } = await render(aboutPost);
-const locale = getCurrentLocale();
+const locale = "en";
 
 function toAbsoluteUrl(path: string): string {
 	return new URL(path, Astro.site ?? Astro.url).href;
 }
 
-const canonicalUrl = toAbsoluteUrl("/about/");
+const canonicalUrl = toAbsoluteUrl("/about/en/");
 const alternateLinks = [
 	{ hrefLang: "zh-CN", href: toAbsoluteUrl("/about/") },
 	{ hrefLang: "en", href: toAbsoluteUrl("/about/en/") },
 	{ hrefLang: "x-default", href: toAbsoluteUrl("/about/") },
 ];
 ---
-<MainGridLayout title={t("page.about", locale)} description={t("page.about", locale)} lang="zh-CN" canonical={canonicalUrl} alternates={alternateLinks}>
+<MainGridLayout title={t("page.about", locale)} description={t("page.about", locale)} lang="en" canonical={canonicalUrl} alternates={alternateLinks}>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full ">
             <Markdown class="mt-2">

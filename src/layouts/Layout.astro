@@ -1,14 +1,19 @@
 ---
-import Analytics from '@vercel/analytics/astro'
+import Analytics from "@vercel/analytics/astro";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import { profileConfig, siteConfig, analyticsConfig, aiChatConfig } from "@/config";
-import ConfigCarrier from "@components/ConfigCarrier.astro";
-import WaveBackground from "@components/misc/WaveBackground.astro";
-import ChaosBackground from "@components/misc/ChaosBackground.astro";
+import {
+	aiChatConfig,
+	analyticsConfig,
+	profileConfig,
+	siteConfig,
+} from "@/config";
 import AIChatWidget from "@components/AIChatWidget.svelte";
+import ConfigCarrier from "@components/ConfigCarrier.astro";
+import ChaosBackground from "@components/misc/ChaosBackground.astro";
+import WaveBackground from "@components/misc/WaveBackground.astro";
 import {
 	AUTO_MODE,
 	BANNER_HEIGHT,
@@ -31,9 +36,23 @@ interface Props {
 	description?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
+	canonical?: string;
+	alternates?: Array<{
+		hrefLang: string;
+		href: string;
+	}>;
 }
 
-let { title, banner, image, description, lang, setOGTypeArticle } = Astro.props;
+let {
+	title,
+	banner,
+	image,
+	description,
+	lang,
+	setOGTypeArticle,
+	canonical,
+	alternates = [],
+} = Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 // Swup can update the body for each page visit, but it's after the page transition, causing a delay for banner height change
@@ -64,10 +83,10 @@ if (title) {
 let ogImageUrl: string;
 if (image) {
 	// 如果传入了图片路径
-	if (image.startsWith('http://') || image.startsWith('https://')) {
+	if (image.startsWith("http://") || image.startsWith("https://")) {
 		// 已经是完整URL
 		ogImageUrl = image;
-	} else if (image.startsWith('/')) {
+	} else if (image.startsWith("/")) {
 		// 公共目录的绝对路径
 		ogImageUrl = new URL(image, Astro.site).href;
 	} else {
@@ -100,6 +119,10 @@ const bannerOffsetByPosition = {
 };
 const bannerOffset =
 	bannerOffsetByPosition[siteConfig.banner.position || "center"];
+const canonicalHref = canonical || Astro.url.href;
+const alternateLinks = alternates.filter(
+	(alternate) => alternate?.hrefLang && alternate?.href,
+);
 ---
 
 <!DOCTYPE html>
@@ -118,7 +141,7 @@ const bannerOffset =
 		)}
 
 		<meta property="og:site_name" content={siteConfig.title}>
-		<meta property="og:url" content={Astro.url}>
+		<meta property="og:url" content={canonicalHref}>
 		<meta property="og:title" content={pageTitle}>
 		<meta property="og:description" content={description}>
 		<meta property="og:image" content={ogImageUrl}>
@@ -129,12 +152,15 @@ const bannerOffset =
         )}
 
 		<meta name="twitter:card" content="summary_large_image">
-		<meta property="twitter:url" content={Astro.url}>
+		<meta property="twitter:url" content={canonicalHref}>
 		<meta name="twitter:title" content={pageTitle}>
 		<meta name="twitter:description" content={description}>
 		<meta name="twitter:image" content={ogImageUrl}>
 
-		<link rel="canonical" href={Astro.url}>
+		<link rel="canonical" href={canonicalHref}>
+		{alternateLinks.map((alternate) => (
+			<link rel="alternate" hreflang={alternate.hrefLang} href={alternate.href} />
+		))}
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
@@ -872,7 +898,9 @@ if (window.swup && !window.__fuwariFancyboxInitialized) {
 			'zh-CN': {
 				nav: {
 					'home': '首页',
+					'blog': '博客',
 					'archive': '归档',
+					'books': '图书',
 					'about': '关于',
 					'friends': '友链',
 					'sponsors': '赞助',
@@ -935,7 +963,9 @@ if (window.swup && !window.__fuwariFancyboxInitialized) {
 			'en': {
 				nav: {
 					'home': 'Home',
+					'blog': 'Blog',
 					'archive': 'Archive',
+					'books': 'Books',
 					'about': 'About',
 					'friends': 'Friends',
 					'sponsors': 'Sponsors',

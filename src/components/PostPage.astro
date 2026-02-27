@@ -1,29 +1,37 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getPostUrlBySlug } from "@utils/url-utils";
+import { getPostUrlBySlugAndLang } from "@utils/url-utils";
+import { getCurrentLocale } from "../i18n";
 import PostCard from "./PostCard.astro";
 
-const { page } = Astro.props;
+interface Props {
+	page: {
+		data: CollectionEntry<"posts">[];
+	};
+	locale?: string;
+}
+
+const { page, locale: localeProp } = Astro.props;
+const locale = localeProp || getCurrentLocale();
 
 let delay = 0;
 const interval = 50;
 ---
 
 <div class="transition flex flex-col rounded-[var(--radius-large)] bg-transparent py-1 md:py-0 md:gap-4 mb-4">
-
-    {page.data.map((entry: CollectionEntry<"posts">) => (
-        <PostCard
-                entry={entry}
-                title={entry.data.title}
-                tags={entry.data.tags}
-                published={entry.data.published}
-                updated={entry.data.updated}
-                url={getPostUrlBySlug(entry.slug)}
-                image={entry.data.image}
-                description={entry.data.description}
-                draft={entry.data.draft}
-                class:list="onload-animation"
-                style={`animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`}
-        ></PostCard>
-    ))}
+	{page.data.map((entry: CollectionEntry<"posts">) => (
+		<PostCard
+			entry={entry}
+			title={entry.data.title}
+			tags={entry.data.tags}
+			published={entry.data.published}
+			updated={entry.data.updated}
+			url={getPostUrlBySlugAndLang(entry.slug, locale)}
+			image={entry.data.image}
+			description={entry.data.description}
+			draft={entry.data.draft}
+			class:list="onload-animation"
+			style={`animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`}
+		></PostCard>
+	))}
 </div>

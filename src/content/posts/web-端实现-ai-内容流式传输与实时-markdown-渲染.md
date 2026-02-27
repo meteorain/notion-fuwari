@@ -5,7 +5,8 @@ description: '在 AI 时代，用户对响应速度的要求越来越高传统�
 image: '../assets/images/web-端实现-ai-内容流式传输与实时-markdown-渲染/cover.jpg'
 tags: ["前端"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'web-端实现-ai-内容流式传输与实时-markdown-渲染'
 category: '技术'
 ---
 

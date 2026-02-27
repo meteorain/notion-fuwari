@@ -15,6 +15,14 @@ function getDate() {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`
 }
 
+function generateSlug(name) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 100) || "untitled"
+}
+
 const args = process.argv.slice(2)
 
 if (args.length === 0) {
@@ -33,6 +41,8 @@ if (!fileExtensionRegex.test(fileName)) {
 
 const targetDir = "./src/content/posts/"
 const fullPath = path.join(targetDir, fileName)
+const fileBaseName = path.basename(fileName, path.extname(fileName))
+const translationKey = generateSlug(fileBaseName)
 
 if (fs.existsSync(fullPath)) {
   console.error(`Error: File ${fullPath} already exists `)
@@ -53,7 +63,8 @@ image: ''
 tags: []
 
 draft: false 
-lang: ''
+lang: 'zh-CN'
+translationKey: '${translationKey}'
 ---
 `
 

@@ -5,7 +5,8 @@ description: '大家新年好，我最近把自己在多个项目里反复打磨
 image: ''
 tags: ["开源项目"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'nextdevtpl-一个面向独立开发者的-next-js-全栈-saas-模板'
 category: '独立开发'
 ---
 

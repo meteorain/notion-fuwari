@@ -1,7 +1,5 @@
 ---
-// 语言切换器组件
 import { Icon } from "astro-icon/components";
-import { locales, localeNames, type Locale } from "../../i18n";
 ---
 
 <div class="relative" id="lang-switcher">
@@ -17,108 +15,217 @@ import { locales, localeNames, type Locale } from "../../i18n";
 		id="lang-menu"
 		class="hidden absolute right-0 top-full mt-2 py-2 w-32 rounded-lg bg-[var(--card-bg)] shadow-lg border border-[var(--line-divider)] z-50"
 	>
-		<!-- 语言选项将通过 JavaScript 动态生成 -->
 	</div>
 </div>
 
 <script is:inline>
-	// 语言配置（内联定义）
-	const locales = ['zh-CN', 'en'];
+	const locales = ["zh-CN", "en"];
 	const localeNames = {
-		'zh-CN': '简体中文',
-		'en': 'English'
+		"zh-CN": "简体中文",
+		en: "English",
+	};
+	const articleListFallback = {
+		"zh-CN": "/posts/",
+		en: "/posts/en/",
+	};
+
+	const getCurrentLocale = () => {
+		if (typeof localStorage !== "undefined") {
+			const preferredLocale = localStorage.getItem("preferred-locale");
+			if (preferredLocale && locales.includes(preferredLocale)) {
+				return preferredLocale;
+			}
+		}
+		return "zh-CN";
+	};
+
+	const isArticlePath = (pathname) => {
+		const segments = pathname.split("/").filter(Boolean);
+		if (segments[0] !== "posts") return false;
+		if (segments[1] === "en") return segments.length >= 3;
+		return segments.length >= 2;
+	};
+
+	const getArticleAltUrl = (targetLocale) => {
+		const localeKey = targetLocale === "en" ? "en" : "zh";
+		const attrName = `data-alt-url-${localeKey}`;
+		const node = document.querySelector(`[${attrName}]`);
+		if (!node) return "";
+		return (node.getAttribute(attrName) || "").trim();
+	};
+
+	const getTargetUrl = (targetLocale) => {
+		const altUrl = getArticleAltUrl(targetLocale);
+		if (altUrl) return altUrl;
+		return articleListFallback[targetLocale] || articleListFallback["zh-CN"];
+	};
+
+	const convertArchivePath = (pathname, targetLocale) => {
+		if (!pathname.startsWith("/archive")) return "";
+
+		if (targetLocale === "en") {
+			if (pathname.startsWith("/archive/en/") || pathname === "/archive/en") {
+				return pathname;
+			}
+			if (pathname.startsWith("/archive/tag/")) {
+				return pathname.replace("/archive/tag/", "/archive/en/tag/");
+			}
+			if (pathname === "/archive" || pathname === "/archive/") {
+				return "/archive/en/";
+			}
+			return "/archive/en/";
+		}
+
+		if (pathname.startsWith("/archive/en/tag/")) {
+			return pathname.replace("/archive/en/tag/", "/archive/tag/");
+		}
+		if (pathname === "/archive/en" || pathname === "/archive/en/") {
+			return "/archive/";
+		}
+		return pathname;
+	};
+
+	const normalizePathForCompare = (pathname) =>
+		pathname.endsWith("/") ? pathname : `${pathname}/`;
+
+	const convertStaticPagePath = (pathname, targetLocale) => {
+		const normalizedPath = normalizePathForCompare(pathname);
+		const staticPageRoutes = {
+			"/about/": {
+				"zh-CN": "/about/",
+				en: "/about/en/",
+			},
+			"/about/en/": {
+				"zh-CN": "/about/",
+				en: "/about/en/",
+			},
+			"/friends/": {
+				"zh-CN": "/friends/",
+				en: "/friends/en/",
+			},
+			"/friends/en/": {
+				"zh-CN": "/friends/",
+				en: "/friends/en/",
+			},
+			"/sponsors/": {
+				"zh-CN": "/sponsors/",
+				en: "/sponsors/en/",
+			},
+			"/sponsors/en/": {
+				"zh-CN": "/sponsors/",
+				en: "/sponsors/en/",
+			},
+		};
+
+		const route = staticPageRoutes[normalizedPath];
+		if (!route) return "";
+		return route[targetLocale] || route["zh-CN"];
+	};
+
+	const switchLocale = (targetLocale) => {
+		if (!targetLocale || !locales.includes(targetLocale)) return;
+		localStorage.setItem("preferred-locale", targetLocale);
+
+		const currentPath = window.location.pathname;
+		const staticPagePath = convertStaticPagePath(currentPath, targetLocale);
+		if (
+			staticPagePath &&
+			normalizePathForCompare(staticPagePath) !== normalizePathForCompare(currentPath)
+		) {
+			window.location.href = staticPagePath;
+			return;
+		}
+
+		const hasAltUrl = Boolean(document.querySelector("[data-alt-url-zh], [data-alt-url-en]"));
+		const onArticlePage = hasAltUrl || isArticlePath(currentPath);
+		const onPostListLikePage =
+			currentPath === "/" ||
+			currentPath === "/archive" ||
+			currentPath === "/archive/" ||
+			currentPath === "/posts" ||
+			currentPath === "/posts/" ||
+			currentPath === "/posts/en" ||
+			currentPath === "/posts/en/" ||
+			currentPath.startsWith("/archive/tag/");
+
+		if (onArticlePage) {
+			const targetUrl = getTargetUrl(targetLocale);
+			if (targetUrl && targetUrl !== currentPath) {
+				window.location.href = targetUrl;
+				return;
+			}
+		}
+
+		if (currentPath.startsWith("/archive")) {
+			const archivePath = convertArchivePath(currentPath, targetLocale);
+			if (archivePath && archivePath !== currentPath) {
+				window.location.href = archivePath;
+				return;
+			}
+		}
+
+		if (onPostListLikePage) {
+			const targetList = articleListFallback[targetLocale] || articleListFallback["zh-CN"];
+			if (targetList !== currentPath) {
+				window.location.href = targetList;
+				return;
+			}
+		}
+
+		window.location.reload();
 	};
 
 	function initLangSwitcher() {
-		// 获取当前语言偏好
-		const getCurrentLocale = () => {
-			if (typeof localStorage !== 'undefined') {
-				const preferredLocale = localStorage.getItem('preferred-locale');
-				if (preferredLocale && locales.includes(preferredLocale)) {
-					return preferredLocale;
-				}
-			}
-			return 'zh-CN'; // 默认语言
-		};
-
 		const currentLocale = getCurrentLocale();
-
-		const btn = document.getElementById('lang-btn');
-		const menu = document.getElementById('lang-menu');
+		const btn = document.getElementById("lang-btn");
+		const menu = document.getElementById("lang-menu");
 
 		if (!btn || !menu) return;
 
-		// 动态渲染语言选项
-		menu.innerHTML = locales.map((locale) => `
+		menu.innerHTML = locales
+			.map(
+				(locale) => `
 			<button
-				class="lang-option w-full px-4 py-2 text-left text-sm hover:bg-[var(--btn-plain-bg-hover)] transition ${locale === currentLocale ? 'text-[var(--primary)] font-medium' : ''}"
+				class="lang-option w-full px-4 py-2 text-left text-sm hover:bg-[var(--btn-plain-bg-hover)] transition ${locale === currentLocale ? "text-[var(--primary)] font-medium" : ""}"
 				data-locale="${locale}"
 			>
 				${localeNames[locale]}
 			</button>
-		`).join('');
+		`,
+			)
+			.join("");
 
-		// 切换菜单显示
-		btn.addEventListener('click', (e) => {
-			e.stopPropagation();
-			menu.classList.toggle('hidden');
-		});
+		btn.onclick = (event) => {
+			event.stopPropagation();
+			menu.classList.toggle("hidden");
+		};
 
-		// 点击外部关闭菜单
-		document.addEventListener('click', () => {
-			menu.classList.add('hidden');
-		});
+		menu.onclick = (event) => {
+			event.stopPropagation();
+			const rawTarget = event.target;
+			if (!(rawTarget instanceof Element)) return;
+			const target = rawTarget.closest(".lang-option");
+			if (!target) return;
+			const nextLocale = target.getAttribute("data-locale");
+			menu.classList.add("hidden");
+			switchLocale(nextLocale);
+		};
 
-		// 防止菜单内点击关闭
-		menu.addEventListener('click', (e) => {
-			e.stopPropagation();
-		});
-
-		// 语言选择
-		const options = document.querySelectorAll('.lang-option');
-		options.forEach((option) => {
-			option.addEventListener('click', () => {
-				const locale = option.dataset.locale;
-				if (!locale) return;
-
-				// 保存语言偏好
-				localStorage.setItem('preferred-locale', locale);
-
-				// 获取当前路径
-				const currentPath = window.location.pathname;
-
-				// 转换路径
-				let newPath = currentPath;
-
-				if (locale === 'zh-CN') {
-					// 切换到中文：移除语言前缀
-					newPath = currentPath.replace(/\/posts\/en\//, '/posts/');
-				} else {
-					// 切换到其他语言
-					if (currentPath.includes('/posts/') && !currentPath.includes('/posts/en/')) {
-						newPath = currentPath.replace('/posts/', `/posts/${locale}/`);
-					} else if (currentPath.includes('/posts/en/')) {
-						newPath = currentPath.replace('/posts/en/', `/posts/${locale}/`);
-					}
-				}
-
-				// 如果路径没变，刷新页面
-				if (newPath !== currentPath) {
-					window.location.href = newPath;
-				} else {
-					window.location.reload();
-				}
-
-				menu.classList.add('hidden');
+		if (!window.__langSwitcherOutsideClickBound) {
+			window.__langSwitcherOutsideClickBound = true;
+			document.addEventListener("click", () => {
+				const activeMenu = document.getElementById("lang-menu");
+				activeMenu?.classList.add("hidden");
 			});
-		});
+		}
 	}
 
-	// 初始化
 	initLangSwitcher();
 
-	// Astro View Transitions 支持
-	document.addEventListener('astro:after-swap', initLangSwitcher);
+	if (!window.__langSwitcherAfterSwapBound) {
+		window.__langSwitcherAfterSwapBound = true;
+		document.addEventListener("astro:after-swap", initLangSwitcher);
+	}
 </script>
 
 <style>

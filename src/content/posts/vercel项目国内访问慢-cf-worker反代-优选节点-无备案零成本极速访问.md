@@ -5,7 +5,8 @@ description: 'Vercel部署的项目在国内有些网络确实访问很慢，有
 image: ''
 tags: ["Cloudflare"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'vercel项目国内访问慢-cf-worker反代-优选节点-无备案零成本极速访问'
 category: '技术'
 ---
 

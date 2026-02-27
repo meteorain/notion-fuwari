@@ -5,7 +5,8 @@ description: '这篇记录我们在 Ankigenix 项目里接入 Cloudflare AI Gate
 image: ''
 tags: ["Cloudflare", "AI"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'cloudflare-ai-gateway-自定义供应商配置与踩坑记录'
 category: '技术'
 ---
 

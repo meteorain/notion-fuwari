@@ -5,7 +5,8 @@ description: 'Cloud Flare优选节点是在你请求CF的时候自动获取最�
 image: ''
 tags: ["Cloudflare"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'cloud-flare配置优选节点教程'
 category: '技术'
 ---
 

@@ -3,16 +3,16 @@ import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { Icon } from "astro-icon/components";
 import type { FriendsData } from "@/types/data";
 import friendsData from "@/data/friends.json";
-import { t, getCurrentLocale } from "@/i18n";
+import { t } from "@/i18n";
 
 const { friends } = friendsData as FriendsData;
-const locale = getCurrentLocale();
+const locale = "en";
 
 function toAbsoluteUrl(path: string): string {
 	return new URL(path, Astro.site ?? Astro.url).href;
 }
 
-const canonicalUrl = toAbsoluteUrl("/friends/");
+const canonicalUrl = toAbsoluteUrl("/friends/en/");
 const alternateLinks = [
 	{ hrefLang: "zh-CN", href: toAbsoluteUrl("/friends/") },
 	{ hrefLang: "en", href: toAbsoluteUrl("/friends/en/") },
@@ -20,7 +20,7 @@ const alternateLinks = [
 ];
 ---
 
-<MainGridLayout title={t("page.friends", locale)} lang="zh-CN" canonical={canonicalUrl} alternates={alternateLinks} hideSidebar={true}>
+<MainGridLayout title={t("page.friends", locale)} lang="en" canonical={canonicalUrl} alternates={alternateLinks} hideSidebar={true}>
     <div class="card-base p-6 md:p-8">
         <div class="flex items-center gap-2 mb-6">
             <div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-white dark:text-black/70">

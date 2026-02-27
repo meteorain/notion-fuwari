@@ -1,0 +1,14 @@
+---
+import PostPage from "../../../components/PostPage.astro";
+import MainGridLayout from "../../../layouts/MainGridLayout.astro";
+import { getSortedPosts } from "../../../utils/content-utils";
+import { t } from "../../../i18n";
+
+const locale = "en";
+const posts = await getSortedPosts(locale);
+const page = { data: posts };
+---
+
+<MainGridLayout title={t("nav.home", locale)} hideSidebar={true} lang={locale}>
+	<PostPage page={page} locale={locale}></PostPage>
+</MainGridLayout>

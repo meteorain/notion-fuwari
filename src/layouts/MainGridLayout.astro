@@ -25,6 +25,11 @@ interface Props {
 	description?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
+	canonical?: string;
+	alternates?: Array<{
+		hrefLang: string;
+		href: string;
+	}>;
 	headings?: MarkdownHeading[];
 	hideSidebar?: boolean; // 控制是否隐藏侧边栏
 }
@@ -37,6 +42,8 @@ const {
 	description,
 	lang,
 	setOGTypeArticle,
+	canonical,
+	alternates,
 	headings = [],
 	hideSidebar = false, // 默认显示侧边栏
 } = Astro.props;
@@ -49,7 +56,7 @@ const mainPanelTop = siteConfig.banner.enable
 	: "5.5rem";
 ---
 
-<Layout title={title} banner={banner} image={image} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle}>
+<Layout title={title} banner={banner} image={image} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} canonical={canonical} alternates={alternates}>
 
 <!-- Navbar -->
 <slot slot="head" name="head"></slot>

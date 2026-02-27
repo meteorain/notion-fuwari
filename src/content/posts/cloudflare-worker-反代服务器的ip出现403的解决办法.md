@@ -5,7 +5,8 @@ description: '在搭建 Pixiv 爬虫镜像站或其他代理服务时，我们�
 image: ''
 tags: ["Cloudflare"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'cloudflare-worker-反代服务器的ip出现403的解决办法'
 category: '技术'
 ---
 

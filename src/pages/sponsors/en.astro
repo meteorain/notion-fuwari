@@ -1,9 +1,9 @@
 ---
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { Icon } from "astro-icon/components";
-import { t, getCurrentLocale } from "@/i18n";
+import { t } from "@/i18n";
 
-const locale = getCurrentLocale();
+const locale = "en";
 import type { SponsorsData } from "@/types/data";
 import sponsorsData from "@/data/sponsors.json";
 
@@ -13,7 +13,7 @@ function toAbsoluteUrl(path: string): string {
 	return new URL(path, Astro.site ?? Astro.url).href;
 }
 
-const canonicalUrl = toAbsoluteUrl("/sponsors/");
+const canonicalUrl = toAbsoluteUrl("/sponsors/en/");
 const alternateLinks = [
 	{ hrefLang: "zh-CN", href: toAbsoluteUrl("/sponsors/") },
 	{ hrefLang: "en", href: toAbsoluteUrl("/sponsors/en/") },
@@ -21,7 +21,7 @@ const alternateLinks = [
 ];
 ---
 
-<MainGridLayout title={t("page.sponsors", locale)} lang="zh-CN" canonical={canonicalUrl} alternates={alternateLinks} hideSidebar={true}>
+<MainGridLayout title={t("page.sponsors", locale)} lang="en" canonical={canonicalUrl} alternates={alternateLinks} hideSidebar={true}>
     <div class="card-base p-6 md:p-8">
         <div class="flex items-center gap-2 mb-6">
             <div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-white dark:text-black/70">

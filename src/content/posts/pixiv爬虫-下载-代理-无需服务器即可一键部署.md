@@ -5,7 +5,8 @@ description: '把去年用python写的pixiv爬虫项目用AI和serverless架构�
 image: ''
 tags: ["爬虫", "serverless", "pixiv", "好玩"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'pixiv爬虫-下载-代理-无需服务器即可一键部署'
 category: '技术'
 ---
 

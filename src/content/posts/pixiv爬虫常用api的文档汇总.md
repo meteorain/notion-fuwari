@@ -5,7 +5,8 @@ description: '开发 Pixiv 爬虫的过程中，我深入研究了 Pixiv 的各�
 image: '../assets/images/pixiv爬虫常用api的文档汇总/cover.jpg'
 tags: ["爬虫", "pixiv", "好玩"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'pixiv爬虫常用api的文档汇总'
 category: '技术'
 ---
 

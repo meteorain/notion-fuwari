@@ -1,33 +1,113 @@
 ---
-import path from "node:path";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
-import { getDir, getPostUrlBySlug } from "@utils/url-utils";
+import {
+	getPostTranslationKey,
+	getPostUrlBySlug,
+	getPostUrlBySlugAndLang,
+	isChinesePostLanguage,
+	isEnglishPostLanguage,
+} from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { gitHubEditConfig, licenseConfig } from "src/config";
 import PostMetadata from "../../components/PostMeta.astro";
-import ImageWrapper from "../../components/misc/ImageWrapper.astro";
-import { profileConfig, siteConfig } from "../../config";
+import { profileConfig } from "../../config";
+import { getCurrentLocale, t } from "../../i18n";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
-import { t, getCurrentLocale } from "../../i18n";
 
 const locale = getCurrentLocale();
 
-export async function getStaticPaths() {
-	const blogEntries = await getSortedPosts();
-	return blogEntries.map((entry) => ({
-		params: { slug: entry.slug },
-		props: { entry },
-	}));
+type StaticPathSeo = {
+	translationKey: string;
+	canonicalPath: string;
+	altPathZh: string;
+	altPathEn: string;
+};
+
+function toAbsoluteUrl(path: string): string {
+	return new URL(path, Astro.site ?? Astro.url).href;
 }
 
-const { entry } = Astro.props;
+export async function getStaticPaths() {
+	const zhEntries = await getSortedPosts("zh-CN");
+	const allEntries = await getSortedPosts();
+	const isEnglishEntry = (
+		entry: Awaited<ReturnType<typeof getSortedPosts>>[number],
+	) =>
+		isEnglishPostLanguage(entry.data.lang) ||
+		entry.slug.toLowerCase().startsWith("en/");
+	const getEntryTranslationKey = (
+		entry: Awaited<ReturnType<typeof getSortedPosts>>[number],
+	) => entry.data.translationKey?.trim() || getPostTranslationKey(entry.slug);
+	const getLocaleSlug = (slug: string, lang: "zh-CN" | "en") => {
+		const normalizedSlug = slug.replace(/^\/+|\/+$/g, "");
+		if (lang === "en") {
+			return normalizedSlug.replace(/^en\//i, "");
+		}
+		return normalizedSlug.replace(/^zh(?:[-_](?:cn|hans))?\//i, "");
+	};
+	const translationMap = new Map<
+		string,
+		{ zhSlug?: string; enSlug?: string }
+	>();
+
+	for (const entry of allEntries) {
+		const translationKey = getEntryTranslationKey(entry);
+		const pair = translationMap.get(translationKey) ?? {};
+		if (isEnglishEntry(entry)) {
+			pair.enSlug = entry.slug;
+		} else {
+			pair.zhSlug = entry.slug;
+		}
+		translationMap.set(translationKey, pair);
+	}
+
+	return zhEntries
+		.filter(
+			(entry) =>
+				isChinesePostLanguage(entry.data.lang) && !isEnglishEntry(entry),
+		)
+		.map((entry) => {
+			const translationKey = getEntryTranslationKey(entry);
+			const pair = translationMap.get(translationKey) ?? {};
+			const zhSlug = pair.zhSlug || entry.slug;
+			const enSlug = pair.enSlug || "";
+			const seo: StaticPathSeo = {
+				translationKey,
+				canonicalPath: getPostUrlBySlugAndLang(zhSlug, "zh-CN"),
+				altPathZh: getPostUrlBySlugAndLang(zhSlug, "zh-CN"),
+				altPathEn: enSlug ? getPostUrlBySlugAndLang(enSlug, "en") : "",
+			};
+
+			return {
+				params: { slug: getLocaleSlug(zhSlug, "zh-CN") },
+				props: { entry, seo },
+			};
+		});
+}
+
+const { entry, seo } = Astro.props as {
+	entry: Awaited<ReturnType<typeof getSortedPosts>>[number];
+	seo: StaticPathSeo;
+};
 const { Content, headings } = await entry.render();
 
 const { remarkPluginFrontmatter } = await entry.render();
+const canonicalUrl = toAbsoluteUrl(seo.canonicalPath);
+const alternateLinks = [
+	{
+		hrefLang: "zh-CN",
+		href: toAbsoluteUrl(seo.altPathZh || seo.canonicalPath),
+	},
+	{ hrefLang: "en", href: toAbsoluteUrl(seo.altPathEn || seo.canonicalPath) },
+	{
+		hrefLang: "x-default",
+		href: toAbsoluteUrl(seo.altPathZh || seo.canonicalPath),
+	},
+];
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -41,17 +121,24 @@ const jsonLd = {
 		url: Astro.site,
 	},
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
-	...(entry.data.updated && { dateModified: formatDateToYYYYMMDD(entry.data.updated) }),
-	...(entry.data.image && { image: new URL(entry.data.image, Astro.site).href }),
-	inLanguage: entry.data.lang
-		? entry.data.lang.replace("_", "-")
-		: siteConfig.lang.replace("_", "-"),
+	...(entry.data.updated && {
+		dateModified: formatDateToYYYYMMDD(entry.data.updated),
+	}),
+	...(entry.data.image && {
+		image: new URL(entry.data.image, Astro.site).href,
+	}),
+	inLanguage: "zh-CN",
 };
 ---
-<MainGridLayout title={entry.data.title} description={entry.data.description} image={entry.data.image} lang={entry.data.lang} setOGTypeArticle={true} headings={headings} hideSidebar={true}>
+<MainGridLayout title={entry.data.title} description={entry.data.description} image={entry.data.image} lang="zh-CN" canonical={canonicalUrl} alternates={alternateLinks} setOGTypeArticle={true} headings={headings} hideSidebar={true}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
-        <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
+        <div
+            id="post-container"
+            data-translation-key={seo.translationKey}
+            data-alt-url-zh={seo.altPathZh}
+            data-alt-url-en={seo.altPathEn}
+            class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
             {}
         ]}>
             <!-- word count and reading time -->

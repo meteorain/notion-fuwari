@@ -5,7 +5,8 @@ description: '家里的电脑跑crawl4ai的时候，发现缺少指定版本的p
 image: ''
 tags: ["疑难杂症"]
 draft: false
-lang: ''
+lang: 'zh-CN'
+translationKey: 'chromium-1187对应版本的playwright版本'
 category: '技术'
 ---
 
