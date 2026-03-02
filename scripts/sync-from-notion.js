@@ -221,7 +221,7 @@ async function processImages(markdown, postSlug) {
 async function fetchPublishedPosts() {
   console.log('📥 从 Notion 获取已发布文章...');
 
-  const response = await notion.databases.query({
+  const params = {
     database_id: CONFIG.notionDatabaseId,
     filter: {
       property: 'Status',
@@ -231,14 +231,27 @@ async function fetchPublishedPosts() {
     },
     sorts: [
       {
-        property: 'Published Date',
+        property: '日期',
         direction: 'descending',
       },
     ],
-  });
+  };
 
-  console.log(`✅ 找到 ${response.results.length} 篇已发布文章`);
-  return response.results;
+  let results = [];
+  while (true) {
+    const res = await notion.databases.query(params);
+
+    results = results.concat(res.results);
+
+    if (!res.has_more) {
+      break;
+    }
+
+    params['start_cursor'] = res.next_cursor;
+  }
+
+  console.log(`✅ 找到 ${results.length} 篇已发布文章`);
+  return results;
 }
 
 /**
@@ -248,10 +261,10 @@ async function processPost(page) {
   const properties = page.properties;
 
   // 获取文章属性
-  const title = properties.Title?.title[0]?.plain_text || 'Untitled';
-  const slug = generateSlug(title);
+  const title = properties['Title']?.formula.string || 'Untitled';
+  const slug = properties['Slug']?.formula.string || generateSlug(title);
   const coverImage = properties['Featured Image']?.files[0]?.file.url
-  const publishedDate = properties['Published Date']?.date?.start || new Date().toISOString();
+  const publishedDate = properties['Date']?.formula.date?.start || new Date().toISOString();
   const tags = properties.Tags?.multi_select?.map(tag => tag.name) || [];
   const category = properties.Category?.select?.name;
 
@@ -263,7 +276,7 @@ async function processPost(page) {
   const { parent: content } = n2m.toMarkdownString(mdBlocks);
 
   // 处理图片
-  const processedContent = await processImages(content, slug);
+  const processedContent = (await processImages(content, slug)) || (properties['天气&心情']?.title[0]?.plain_text || 'Untitled');
 
   // 处理封面图
   let localCoverImage = '';

@@ -76,10 +76,10 @@ const { remarkPluginFrontmatter } = await entry.render();
             <div><span data-i18n-words={entry.slug}>{remarkPluginFrontmatter.words}</span> <span data-i18n-post="words">{t("post.words", locale)}</span></div>
             <div>|</div>
             <div><span data-i18n-minutes={entry.slug}>{remarkPluginFrontmatter.minutes}</span> <span data-i18n-post="minutes">{t("post.minutes", locale)}</span></div>
-            <div>|</div>
+            <!-- <div>|</div>
             <div>
                 <span class="text-50 text-sm font-medium" id={`page-views-${entry.slug}`} data-i18n-stats="loading">{t("stats.loading", locale)}</span>
-            </div>
+            </div> -->
         </div>
 
     </div>
