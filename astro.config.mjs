@@ -34,7 +34,7 @@ export default defineConfig({
     image: {
         service: passthroughImageService()
     },
-    site: "https://blog.chaosyn.com",
+    site: "https://www.liushuying.com/",
     base: "/",
     trailingSlash: "always",
     output: "static",
