@@ -158,6 +158,7 @@ export type AnalyticsConfig = {
 	googleAdsense?: {
 		enable: boolean;
 		publisherId: string;
+		postInlineSlotId?: string;
 	};
 	// Google Analytics
 	googleAnalytics?: {

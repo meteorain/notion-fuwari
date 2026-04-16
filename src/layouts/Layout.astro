@@ -884,6 +884,81 @@ if (window.swup && !window.__fuwariFancyboxInitialized) {
 }
 </script>
 
+{analyticsConfig.googleAdsense?.enable && (
+	<script is:inline>
+		const placeAdSenseSlotTemplates = () => {
+			const adTemplates = document.querySelectorAll(
+				'template[data-fuwari-adsense-template="true"][data-fuwari-adsense-placement="after-first-paragraph"]:not([data-fuwari-adsense-rendered="true"])',
+			);
+
+			for (const adTemplate of adTemplates) {
+				const targetSelector =
+					adTemplate.getAttribute("data-fuwari-adsense-target") || "#post-container .custom-md";
+				const targetContainer = document.querySelector(targetSelector);
+				const firstParagraph = targetContainer?.querySelector("p");
+
+				if (!firstParagraph) {
+					continue;
+				}
+
+				const adWrapper = adTemplate.content.firstElementChild?.cloneNode(true);
+				if (!(adWrapper instanceof HTMLElement)) {
+					continue;
+				}
+
+				firstParagraph.insertAdjacentElement("afterend", adWrapper);
+				adTemplate.setAttribute("data-fuwari-adsense-rendered", "true");
+			}
+		};
+
+		const initializeAdSenseSlots = () => {
+			const adSlots = document.querySelectorAll(
+				'ins.adsbygoogle[data-fuwari-adsense="true"]:not([data-fuwari-adsense-initialized="true"])',
+			);
+
+			for (const adSlot of adSlots) {
+				try {
+					(window.adsbygoogle = window.adsbygoogle || []).push({});
+					adSlot.setAttribute("data-fuwari-adsense-initialized", "true");
+				} catch (error) {
+					console.warn("Failed to initialize AdSense slot", error);
+				}
+			}
+		};
+
+		const setupAdSense = () => {
+			placeAdSenseSlotTemplates();
+			initializeAdSenseSlots();
+
+			if (window?.swup?.hooks && !window.__fuwariAdsenseInitialized) {
+				window.__fuwariAdsenseInitialized = true;
+				window.swup.hooks.on("page:view", () => {
+					requestAnimationFrame(() => {
+						placeAdSenseSlotTemplates();
+						initializeAdSenseSlots();
+					});
+				});
+			} else if (!window.__fuwariAdsenseInitialized) {
+				document.addEventListener("swup:enable", () => {
+					if (!window.__fuwariAdsenseInitialized) {
+						window.__fuwariAdsenseInitialized = true;
+						window.swup.hooks.on("page:view", () => {
+							requestAnimationFrame(() => {
+								placeAdSenseSlotTemplates();
+								initializeAdSenseSlots();
+							});
+						});
+					}
+					placeAdSenseSlotTemplates();
+					initializeAdSenseSlots();
+				});
+			}
+		};
+
+		setupAdSense();
+	</script>
+)}
+
 <!-- 客户端国际化脚本 -->
 <script is:inline>
 	// 客户端国际化更新脚本

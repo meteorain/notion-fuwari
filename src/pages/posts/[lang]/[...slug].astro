@@ -1,6 +1,7 @@
 ---
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
+import AdSenseSlot from "@components/misc/AdSenseSlot.astro";
 
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
@@ -198,6 +199,10 @@ const jsonLd = {
             <Markdown class="mb-6 markdown-content onload-animation">
                 <Content />
             </Markdown>
+
+			<AdSenseSlot class="mb-6" placement="after-first-paragraph" />
+
+			<AdSenseSlot class="mb-6" />
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl onload-animation"></License>}
 

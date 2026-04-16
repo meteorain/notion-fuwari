@@ -1,6 +1,7 @@
 ---
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
+import AdSenseSlot from "@components/misc/AdSenseSlot.astro";
 
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
@@ -199,6 +200,10 @@ const jsonLd = {
             <Markdown class="mb-6 markdown-content onload-animation">
                 <Content />
             </Markdown>
+
+			<AdSenseSlot class="mb-6" placement="after-first-paragraph" />
+
+			<AdSenseSlot class="mb-6" />
 
             <!-- 文章反馈与编辑区域 -->
             <div class="mb-4 p-4 rounded-lg bg-[var(--license-block-bg)] border border-[var(--line-divider)] onload-animation">

@@ -1,0 +1,60 @@
+---
+import { analyticsConfig } from "@/config";
+
+interface Props {
+	class?: string;
+	slotId?: string;
+	format?: string;
+	responsive?: boolean;
+	placement?: "static" | "after-first-paragraph";
+	targetSelector?: string;
+}
+
+const {
+	class: className,
+	slotId = analyticsConfig.googleAdsense?.postInlineSlotId,
+	format = "auto",
+	responsive = true,
+	placement = "static",
+	targetSelector = "#post-container .custom-md",
+} = Astro.props;
+
+const googleAdsense = analyticsConfig.googleAdsense;
+const isEnabled = Boolean(
+	googleAdsense?.enable && googleAdsense.publisherId && slotId,
+);
+const wrapperClass = [className, "w-full my-6 overflow-hidden onload-animation"];
+---
+
+{
+	isEnabled && placement === "after-first-paragraph" ? (
+		<template
+			data-fuwari-adsense-template="true"
+			data-fuwari-adsense-placement={placement}
+			data-fuwari-adsense-target={targetSelector}>
+			<div class:list={wrapperClass}>
+				<ins
+					class="adsbygoogle"
+					style="display:block"
+					data-fuwari-adsense="true"
+					data-ad-client={googleAdsense!.publisherId}
+					data-ad-slot={slotId}
+					data-ad-format={format}
+					data-full-width-responsive={responsive ? "true" : "false"}>
+				</ins>
+			</div>
+		</template>
+	) : isEnabled ? (
+		<div class:list={wrapperClass}>
+			<ins
+				class="adsbygoogle"
+				style="display:block"
+				data-fuwari-adsense="true"
+				data-ad-client={googleAdsense!.publisherId}
+				data-ad-slot={slotId}
+				data-ad-format={format}
+				data-full-width-responsive={responsive ? "true" : "false"}>
+			</ins>
+		</div>
+	) : null
+}

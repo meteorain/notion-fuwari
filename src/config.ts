@@ -173,10 +173,11 @@ export const analyticsConfig: AnalyticsConfig = {
 		enable: false,
 		projectId: "t8f0gmcwtx",
 	},
-	// Google AdSense（原作者的广告ID，建议删除或替换）
+	// Google AdSense（请替换为自己的广告ID）
 	googleAdsense: {
-		enable: false,
-		publisherId: "ca-pub-1683686345039700",
+		enable: true,
+		publisherId: "ca-pub-1149581082118045",
+		postInlineSlotId: "6077231481",
 	},
 	// Google Analytics（原作者的配置，建议删除或替换）
 	googleAnalytics: {
