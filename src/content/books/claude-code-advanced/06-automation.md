@@ -842,8 +842,8 @@ Routines 完全自主运行，无权限提示：
 
 **系列其他章节**：
 
-- 上一篇：[05-multi-agent-orchestration.md](/books/claude-code-advanced/05-multi-agent-orchestration/)——多智能体编排与子代理
-- 下一篇：[07-agent-sdk.md](/books/claude-code-advanced/07-agent-sdk/)——用 Python/TypeScript Agent SDK 构建自定义自动化
-- 工具与扩展基础：[04-mcp-and-tools.md](/books/claude-code-advanced/04-mcp-and-tools/)
-- 自定义与配置：[03-customization-and-extensions.md](/books/claude-code-advanced/03-customization-and-extensions/)
+- 上一篇：[阶段 5 · 多代理与编排——单会话玩到头之后的横向扩展](/books/claude-code-advanced/05-multi-agent-orchestration/)——多智能体编排与子代理
+- 下一篇：[阶段 7 · Agent SDK——用 Claude Code 引擎构建你自己的代理](/books/claude-code-advanced/07-agent-sdk/)——用 Python/TypeScript Agent SDK 构建自定义自动化
+- 工具与扩展基础：[阶段 4 · MCP 与工具集成——让 Claude 接上你的外部世界](/books/claude-code-advanced/04-mcp-and-tools/)
+- 自定义与配置：[阶段 3 · 定制与扩展——Skill / Hook / Subagent / Plugin 四件套](/books/claude-code-advanced/03-customization-and-extensions/)
 

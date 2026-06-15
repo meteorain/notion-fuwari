@@ -744,8 +744,8 @@ claude mcp add --transport http myserver https://example.com
 - [MCP 官方协议文档](https://modelcontextprotocol.io/introduction)
 
 **系列其他文章：**
-- 上一篇：[03-customization-and-extensions.md](/books/claude-code-advanced/03-customization-and-extensions/)——CLAUDE.md 定制、全局规则、skill 开发
-- 下一篇：[05-multi-agent-orchestration.md](/books/claude-code-advanced/05-multi-agent-orchestration/)——subagent、Agent 工具、并行任务编排
-- [06-automation.md](/books/claude-code-advanced/06-automation/)——hooks、定时任务、自动化工作流
-- [07-agent-sdk.md](/books/claude-code-advanced/07-agent-sdk/)——Claude Agent SDK 构建自定义代理
+- 上一篇：[阶段 3 · 定制与扩展——Skill / Hook / Subagent / Plugin 四件套](/books/claude-code-advanced/03-customization-and-extensions/)——CLAUDE.md 定制、全局规则、skill 开发
+- 下一篇：[阶段 5 · 多代理与编排——单会话玩到头之后的横向扩展](/books/claude-code-advanced/05-multi-agent-orchestration/)——subagent、Agent 工具、并行任务编排
+- [阶段 6 · 自动化与无人值守——让 Claude 在你不在时也干活](/books/claude-code-advanced/06-automation/)——hooks、定时任务、自动化工作流
+- [阶段 7 · Agent SDK——用 Claude Code 引擎构建你自己的代理](/books/claude-code-advanced/07-agent-sdk/)——Claude Agent SDK 构建自定义代理
 

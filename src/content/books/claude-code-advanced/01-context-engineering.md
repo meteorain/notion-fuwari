@@ -593,9 +593,9 @@ MEMORY.md 有 200 行 / 25KB 的加载上限，超出部分启动时不加载。
 - [Prompt caching API 底层机制（定价与断点）](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
 
 **系列其他篇章**
-- 上一篇：[00-foundations.md](/books/claude-code-advanced/00-foundations/) — 环境搭建与核心概念
-- 下一篇：[02-workflow-and-sessions.md](/books/claude-code-advanced/02-workflow-and-sessions/) — 工作流与会话管理
-- 延伸阅读：[03-customization-and-extensions.md](/books/claude-code-advanced/03-customization-and-extensions/) — Skills、Hooks 与深度定制
-- 延伸阅读：[04-mcp-and-tools.md](/books/claude-code-advanced/04-mcp-and-tools/) — MCP 服务器与工具扩展
-- 延伸阅读：[05-multi-agent-orchestration.md](/books/claude-code-advanced/05-multi-agent-orchestration/) — 多智能体编排
+- 上一篇：[阶段 0 · 地基校准——理解引擎与交互基础](/books/claude-code-advanced/00-foundations/) — 环境搭建与核心概念
+- 下一篇：[阶段 2 · 工作流与会话控制——把"会用"变成"高效且可控"](/books/claude-code-advanced/02-workflow-and-sessions/) — 工作流与会话管理
+- 延伸阅读：[阶段 3 · 定制与扩展——Skill / Hook / Subagent / Plugin 四件套](/books/claude-code-advanced/03-customization-and-extensions/) — Skills、Hooks 与深度定制
+- 延伸阅读：[阶段 4 · MCP 与工具集成——让 Claude 接上你的外部世界](/books/claude-code-advanced/04-mcp-and-tools/) — MCP 服务器与工具扩展
+- 延伸阅读：[阶段 5 · 多代理与编排——单会话玩到头之后的横向扩展](/books/claude-code-advanced/05-multi-agent-orchestration/) — 多智能体编排
 

@@ -835,13 +835,13 @@ Python 的 `@tool` 装饰器只转发 `content` 和 `is_error`。如果需要在
 
 | 文件 | 主题 |
 |---|---|
-| [00-foundations.md](/books/claude-code-advanced/00-foundations/) | CLI 核心基础 |
-| [01-context-engineering.md](/books/claude-code-advanced/01-context-engineering/) | 上下文工程 |
-| [02-workflow-and-sessions.md](/books/claude-code-advanced/02-workflow-and-sessions/) | 工作流与会话管理 |
-| [03-customization-and-extensions.md](/books/claude-code-advanced/03-customization-and-extensions/) | 定制化与扩展 |
-| [04-mcp-and-tools.md](/books/claude-code-advanced/04-mcp-and-tools/) | MCP 与工具集成 |
-| [05-multi-agent-orchestration.md](/books/claude-code-advanced/05-multi-agent-orchestration/) | 多代理编排 |
-| [06-automation.md](/books/claude-code-advanced/06-automation/) | 自动化与 CI/CD |
+| [阶段 0 · 地基校准——理解引擎与交互基础](/books/claude-code-advanced/00-foundations/) | CLI 核心基础 |
+| [阶段 1 · 上下文工程——决定 Claude Code 上限的核心内功](/books/claude-code-advanced/01-context-engineering/) | 上下文工程 |
+| [阶段 2 · 工作流与会话控制——把"会用"变成"高效且可控"](/books/claude-code-advanced/02-workflow-and-sessions/) | 工作流与会话管理 |
+| [阶段 3 · 定制与扩展——Skill / Hook / Subagent / Plugin 四件套](/books/claude-code-advanced/03-customization-and-extensions/) | 定制化与扩展 |
+| [阶段 4 · MCP 与工具集成——让 Claude 接上你的外部世界](/books/claude-code-advanced/04-mcp-and-tools/) | MCP 与工具集成 |
+| [阶段 5 · 多代理与编排——单会话玩到头之后的横向扩展](/books/claude-code-advanced/05-multi-agent-orchestration/) | 多代理编排 |
+| [阶段 6 · 自动化与无人值守——让 Claude 在你不在时也干活](/books/claude-code-advanced/06-automation/) | 自动化与 CI/CD |
 
 ---
 
