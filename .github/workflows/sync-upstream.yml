@@ -1,0 +1,94 @@
+name: 同步上游 evepupil/notion-fuwari
+
+# 每周自动把上游 evepupil/notion-fuwari 的「代码」更新合并过来：
+# - 始终丢弃上游的 src/content（文章/图书/配图）——本仓库内容只走 Notion（见 sync-notion.yml）
+# - 有实际代码改动 → 开 PR（Vercel 自动出预览，你确认后合并）
+# - 出现真冲突（代码） → 开 issue 提醒（可让 Claude 帮忙解决）
+# - 仅上游内容变化 → 跳过
+# 也可在 Actions 页面手动点 “Run workflow” 触发。
+#
+# 注：用内置 GITHUB_TOKEN。若开 PR 被仓库设置拦截，请在
+# Settings → Actions → General 勾选 “Allow GitHub Actions to create and approve pull requests”，
+# 或把下面的 token 换成你自己的 PAT。
+
+on:
+  schedule:
+    - cron: '0 18 * * 0'   # 每周日 18:00 UTC（北京时间周一 02:00）
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 合并上游（丢弃上游内容）并按需开 PR / issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git remote add upstream https://github.com/evepupil/notion-fuwari.git 2>/dev/null || true
+          git fetch upstream master
+
+          # 上游没有新提交就退出
+          if git merge-base --is-ancestor upstream/master origin/master; then
+            echo "已是最新，无需同步。"
+            exit 0
+          fi
+
+          git checkout -B sync/upstream origin/master
+
+          # 合并但不自动提交（有冲突也不让脚本中断）
+          git merge --no-commit --no-ff upstream/master || true
+
+          # 关键：src/content 完全保留本仓库版本，丢弃上游推来的任何文章/图书/配图。
+          # （文章由 Notion 经 sync-notion.yml 提交，这里绝不接收上游内容）
+          git rm -r --cached --ignore-unmatch -q -- src/content >/dev/null 2>&1 || true
+          rm -rf src/content
+          git checkout HEAD -- src/content
+          git add -A -- src/content
+
+          # 仍有其它（代码）冲突 → 开 issue 求助，终止
+          REMAIN="$(git diff --name-only --diff-filter=U || true)"
+          if [ -n "$REMAIN" ]; then
+            git merge --abort || true
+            LIST="$(echo "$REMAIN" | sed 's/^/- /')"
+            BODY="$(printf '自动同步上游 evepupil/notion-fuwari 时，以下文件有冲突，需要手动合并（src/content 请保持丢弃上游、走 Notion）：\n\n%s\n\n（可让 Claude 帮你解决。）' "$LIST")"
+            OPEN="$(gh issue list --search '上游同步有冲突 in:title state:open' --json number --jq 'length' || echo 0)"
+            if [ "${OPEN:-0}" = "0" ]; then
+              gh issue create --title "⚠️ 上游同步有冲突，需手动处理" --body "$BODY"
+            fi
+            echo "有冲突，已开/已存在 issue。"
+            exit 0
+          fi
+
+          # 除 src/content 外没有实际改动 → 仅上游内容变化，跳过（不开 PR）
+          if git diff --cached --quiet; then
+            echo "上游仅更新了内容（已丢弃），无代码改动，跳过。"
+            git merge --abort || true
+            exit 0
+          fi
+
+          # 提交合并（src/content 已重置为我方）
+          git commit --no-edit -m "Merge upstream/master（自动同步上游代码，丢弃上游 src/content）"
+
+          # 推分支、开/更新 PR，交给你用 Vercel 预览验收后合并
+          git push -f origin sync/upstream
+          PR_BODY="自动合并上游 evepupil/notion-fuwari 最新代码（已自动丢弃上游 src/content，文章仍走 Notion）。请查看本 PR 的 Vercel 预览，确认无误后 Merge。"
+          if gh pr view sync/upstream >/dev/null 2>&1; then
+            gh pr edit sync/upstream --title "🔄 同步上游 notion-fuwari（自动）" --body "$PR_BODY"
+          else
+            gh pr create --base master --head sync/upstream --title "🔄 同步上游 notion-fuwari（自动）" --body "$PR_BODY"
+          fi
+          echo "已开/更新 PR，等你验收合并。"

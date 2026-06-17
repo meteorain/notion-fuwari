@@ -1,0 +1,5 @@
+# 内容来自 Notion（构建时生成），合并上游时这些路径始终保留我方，
+# 不接收上游仓库推送进来的文章/图书内容。需配合 `git config merge.ours.driver true`。
+src/content/posts/** merge=ours
+src/content/assets/** merge=ours
+src/content/books/** merge=ours

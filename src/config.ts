@@ -1,5 +1,5 @@
 import type {
-    ExpressiveCodeConfig,
+	ExpressiveCodeConfig,
 	GitHubEditConfig,
 	ImageFallbackConfig,
 	LicenseConfig,
@@ -79,6 +79,11 @@ export const siteConfig: SiteConfig = {
 export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
+		{
+			name: "博客",
+			url: "/posts/",
+			external: false,
+		},
 		LinkPreset.Archive,
 		LinkPreset.About,
 	],
@@ -133,16 +138,18 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 
 export const gitHubEditConfig: GitHubEditConfig = {
 	enable: false,
-	baseUrl: "https://github.com/evepupil/notion-fuwari/blob/master/src/content/posts",
+	baseUrl:
+		"https://github.com/evepupil/notion-fuwari/blob/master/src/content/posts",
 };
-
 
 export const statsConfig = {
 	viewsText: "浏览",
 	visitsText: "访客",
 	loadingText: "统计加载中...",
-	unavailableText: "统计不可用。请检查是否屏蔽了Umami域名，如AdGuard和AdBlock等插件",
-	getStatsText: (pageViews: number, visits: number) => `${statsConfig.viewsText} ${pageViews} · ${statsConfig.visitsText} ${visits}`,
+	unavailableText:
+		"统计不可用。请检查是否屏蔽了Umami域名，如AdGuard和AdBlock等插件",
+	getStatsText: (pageViews: number, visits: number) =>
+		`${statsConfig.viewsText} ${pageViews} · ${statsConfig.visitsText} ${visits}`,
 };
 
 // 分析和广告配置
@@ -163,10 +170,11 @@ export const analyticsConfig: AnalyticsConfig = {
 		enable: false,
 		projectId: "t8f0gmcwtx",
 	},
-	// Google AdSense（原作者的广告ID，建议删除或替换）
+	// Google AdSense（请替换为自己的广告ID）
 	googleAdsense: {
-		enable: false,
-		publisherId: "ca-pub-1683686345039700",
+		enable: true,
+		publisherId: "ca-pub-1149581082118045",
+		postInlineSlotId: "6077231481",
 	},
 	// Google Analytics（原作者的配置，建议删除或替换）
 	googleAnalytics: {

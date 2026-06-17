@@ -32,3 +32,7 @@ yarn.lock
 # 忽略上游仓库
 ori
 *-cwd
+
+# 文章/配图由 Vercel 构建时从 Notion 现拉现生成，不纳入版本库（仓库不存任何文章）
+src/content/posts/
+src/content/assets/
