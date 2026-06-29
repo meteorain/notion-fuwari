@@ -33,6 +33,10 @@ jobs:
       - name: 合并上游（丢弃上游内容）并按需开 PR / issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 强制所有 gh 命令打到本 fork：脚本加了名为 upstream 的 remote，
+          # gh 会把它当 PR 目标仓库（fork 特殊处理），导致 PR 建到上游 evepupil 去，
+          # 用本仓库 token 无权访问，报 “Resource not accessible by integration”。
+          GH_REPO: ${{ github.repository }}
         run: |
           set -e
           git config user.name "github-actions[bot]"
