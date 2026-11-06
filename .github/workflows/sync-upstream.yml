@@ -20,6 +20,7 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  actions: write   # 保活步骤调用 enable workflow API 需要
 
 jobs:
   sync:
@@ -90,9 +91,16 @@ jobs:
           # 推分支、开/更新 PR，交给你用 Vercel 预览验收后合并
           git push -f origin sync/upstream
           PR_BODY="自动合并上游 evepupil/notion-fuwari 最新代码（已自动丢弃上游 src/content，文章仍走 Notion）。请查看本 PR 的 Vercel 预览，确认无误后 Merge。"
-          if gh pr view sync/upstream >/dev/null 2>&1; then
-            gh pr edit sync/upstream --title "🔄 同步上游 notion-fuwari（自动）" --body "$PR_BODY"
-          else
-            gh pr create --base master --head sync/upstream --title "🔄 同步上游 notion-fuwari（自动）" --body "$PR_BODY"
-          fi
+          PT="🔄 同步上游 notion-fuwari（自动）"
+          gh pr edit sync/upstream --title "$PT" --body "$PR_BODY" 2>/dev/null \
+            || gh pr create --base master --head sync/upstream --title "$PT" --body "$PR_BODY" 2>/dev/null \
+            || echo "::warning::PR 创建/更新失败（分支已推送、PR 列表仍可见）。"
           echo "已开/更新 PR，等你验收合并。"
+
+      # 保活：GitHub 会在仓库 60 天无提交后自动禁用定时任务（本仓库文章走 Notion、代码很少动）。
+      # 每次运行都调用 enable API 重置计时，无需提交。always() 保证上一步 exit/失败也会执行。
+      - name: 保活（防 60 天无提交被自动禁用）
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/sync-upstream.yml/enable" && echo "已保活" || echo "::warning::保活调用失败"
